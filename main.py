@@ -6,11 +6,26 @@ import matplotlib
 
 master = Tk() 
 
-master.title("GUI Maker V2")
- 
-FName = "a"
-File = open(FName+".txt", "a+")
+master.title("E2 GUI Maker V2")
 
+def log(text):
+    file.write(text)
+
+file = open("Hud.txt","w+")
+log("@name Hud \n" )
+log("@inputs E:wirelink\n")
+log("@persist X Y ScreenRes:vector2\n")
+log("if(first()){\n")
+log("    #-------------------------#\n")
+log("    E:egpClear()\n")
+log("    ScreenRes = egpScrSize(owner())\n")
+log("    X = ScreenRes:x()\n")
+log("    Y = ScreenRes:y()\n")
+log("    Res=ScreenRes/2\n")
+log("    print('Your Resolution Is: '+ScreenRes:toString())\n")
+log("    #-------------------------#\n")
+log("}\n")
+file.close()
 #---------------------------------------------------------------------------------------------#
 # Global Variables
 Clicks = 0
