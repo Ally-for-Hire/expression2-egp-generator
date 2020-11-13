@@ -2,6 +2,8 @@
 # Initial Setup
 from tkinter import *
 import tkinter as tk
+import matplotlib
+
 master = Tk() 
 
 master.title("GUI Maker V2")
@@ -63,10 +65,15 @@ def showcolchoice():
         collis.insert(4, "Green")
         collis.insert(5, "Yellow")
         collis.insert(6, "Brown")
+        collis.insert(7,"Orange")
+        collis.insert(8,"Purple")
+        for i in range(8):
+            collis.itemconfig(i,fg = collis.get(i))
         gridobj(collis,8,0,1,2)
     else:
         var.set("Color: "+collis.get(ACTIVE))
         color = collis.get(ACTIVE)
+        collbl.config(fg = color)
         collis.destroy()
         A=0
 
@@ -79,6 +86,7 @@ def showtypechoice():
         typelbl.insert(2, "Oval")
         typelbl.insert(3, "Circle")
         typelbl.insert(4, "Line")
+
         gridobj(typelbl,8,2,1,1)
     else:
         var2.set("Type: " + typelbl.get(ACTIVE))
@@ -91,7 +99,7 @@ def showsnapslider():
     if(C==0):
         C = 1
         var3str = var3.get()
-        snapslider = Scale(master,from_ = 5, relief = RAISED, to = 15)
+        snapslider = Scale(master,from_ = 0, relief = RAISED, to = 50)
         if var3str != "Snap: 10":
             sp = var3str.split(" ")
             snapslider.set(int(sp[1]))
@@ -140,3 +148,4 @@ gridobj(snaplbl,7,3,1,1)
 # Finishing it all
 master.mainloop()
 #---------------------------------------------------------------------------------------------#
+
