@@ -51,6 +51,7 @@ snapamnt = 10
 GList = []
 color = "Black"
 type = "Line"
+var5 = StringVar()
 #---------------------------------------------------------------------------------------------#
 # Functions
 def gridobj(obj,coln,rown,cex,rex):
@@ -202,6 +203,14 @@ def showsnapslider():
         snapslider.destroy()
         C=0
 
+def undolast():
+    global AllPoints, can
+    p = len(AllPoints)-1
+    print("Undone "+str(AllPoints[p]))
+    can.delete(AllPoints[p])
+    AllPoints.pop(p)
+
+
 #---------------------------------------------------------------------------------------------#
 # Widgets
 can = Canvas(master, width=wi, height=hi)
@@ -220,7 +229,12 @@ snaplbl = Button(master, textvariable=var3,relief=RAISED, command = showsnapslid
 snaplbl.config(font=("Courier", 24))
 var3.set("Snap: 10")
 
+back = Button(master, textvariable=var5,relief=RAISED, command = undolast)
+back.config(font=("Courier", 24))
+var5.set("Undo")
+
 can.bind("<Button-1>", callback)
+
 #---------------------------------------------------------------------------------------------#
 # Geometry stuff
 ge = 10
@@ -240,6 +254,7 @@ gridobj(quitb,7,7,1,1)
 gridobj(collbl,7,1,1,1)
 gridobj(typelbl,7,2,1,1)
 gridobj(snaplbl,7,3,1,1)
+gridobj(back,7,4,1,1)
 #---------------------------------------------------------------------------------------------#
 # Awesome Logic
 
