@@ -105,16 +105,36 @@ def callback(event):
             print("Point 2 Placed")
             AllPoints.append(can.create_rectangle(Points[0],Points[1],outline=color))
             file = open("Hud.txt","a")
-            Rw = Points[0,0]-Points[1,0]
-            Rh = Points[0,1]-Points[1,1]
-            Originx = Points[0]+Rw/2 
-            Originy = Points[0]+Rh/2
+            Rw = Points[0][0]-Points[1][0]
+            Rh = Points[0][1]-Points[1][1]
+            Originx = Points[0][0]-Rw/2 
+            Originy = Points[0][1]-Rh/2
             Ox = torelx(Originx)
             Oy = torely(Originy)
             Ax = Rw
             Ay = Rh
             C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
-            file.write("E:egpBoxOutline({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
+            file.write("E:egpBoxOutline({0},Res+vec2({1},{2}),vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,abs(Ax),abs(Ay)))
+            file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
+            file.close()
+            Points = []
+    if type == "Box":
+        if len(Points)==1:
+            print("Point 1 Placed")
+        elif len(Points)==2:
+            print("Point 2 Placed")
+            AllPoints.append(can.create_rectangle(Points[0],Points[1],fill=color))
+            file = open("Hud.txt","a")
+            Rw = Points[0][0]-Points[1][0]
+            Rh = Points[0][1]-Points[1][1]
+            Originx = Points[0][0]-Rw/2 
+            Originy = Points[0][1]-Rh/2
+            Ox = torelx(Originx)
+            Oy = torely(Originy)
+            Ax = Rw
+            Ay = Rh
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
+            file.write("E:egpBox({0},Res+vec2({1},{2}),vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,abs(Ax),abs(Ay)))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
@@ -134,26 +154,6 @@ def callback(event):
             Ay = torely(Points[1][1])
             C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
             file.write("E:egpCircle({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
-            file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
-            file.close()
-            Points = []
-    if type == "Box":
-        if len(Points)==1:
-            print("Point 1 Placed")
-        elif len(Points)==2:
-            print("Point 2 Placed")
-            AllPoints.append(can.create_rectangle(Points[0],Points[1],fill=color))
-            file = open("Hud.txt","a")
-            Rw = Points[0,0]-Points[1,0]
-            Rh = Points[0,1]-Points[1,1]
-            Originx = Points[0]+Rw/2 
-            Originy = Points[0]+Rh/2
-            Ox = torelx(Originx)
-            Oy = torely(Originy)
-            Ax = Rw
-            Ay = Rh
-            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
-            file.write("E:egpBox({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
