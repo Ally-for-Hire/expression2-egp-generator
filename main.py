@@ -79,8 +79,6 @@ def callback(event):
     
     lx = event.x
     ly = event.y
-    print("Mouse Clicked at X={0}, Y={1}".format(lx,ly))
-    print("Point Snapped to X={0}. Y={1}".format(snap(lx,snapamnt),snap(ly,snapamnt)))
     Point = snap(lx,snapamnt)-5,snap(ly,snapamnt)
     Points.append(Point)
     type = var2.get().split(" ",1)[1]
@@ -95,7 +93,7 @@ def callback(event):
             Oy = torely(Points[0][1])
             Ax = torelx(Points[1][0])
             Ay = torely(Points[1][1])
-            C = colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255,colors.to_rgba(color)[3]*255
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
             file.write("E:egpLine({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
@@ -111,7 +109,7 @@ def callback(event):
             Oy = torely(Points[0][1])
             Ax = torelx(Points[1][0])
             Ay = torely(Points[1][1])
-            C = colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255,colors.to_rgba(color)[3]*255
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
             file.write("E:egpBoxOutline({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
@@ -124,14 +122,30 @@ def callback(event):
             L = Points[0][0]-Points[0][0]/2
             I = Points[0][1]+Points[0][1]/2
             Pp = L,I
-            AllPoints.append(can.create_oval(Pp,Points[1],outline=color))
+            AllPoints.append(can.create_oval(Points[0],Points[1],fill=color))
             file = open("Hud.txt","a")
             Ox = torelx(Points[0][0])
             Oy = torely(Points[0][1])
             Ax = torelx(Points[1][0])
             Ay = torely(Points[1][1])
-            C = colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255,colors.to_rgba(color)[3]*255
-            file.write("E:egpCircleOutline({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
+            file.write("E:egpCircle({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
+            file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
+            file.close()
+            Points = []
+    if type == "Box":
+        if len(Points)==1:
+            print("Point 1 Placed")
+        elif len(Points)==2:
+            print("Point 2 Placed")
+            AllPoints.append(can.create_rectangle(Points[0],Points[1],fill=color))
+            file = open("Hud.txt","a")
+            Ox = torelx(Points[0][0])
+            Oy = torely(Points[0][1])
+            Ax = torelx(Points[1][0])
+            Ay = torely(Points[1][1])
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
+            file.write("E:egpBox({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
@@ -151,7 +165,10 @@ def showcolchoice():
         collis.insert(6, "Brown")
         collis.insert(7,"Orange")
         collis.insert(8,"Purple")
-        for i in range(8):
+        collis.insert(9,"Gold")
+        collis.insert(10,"Lightgrey")
+        collis.insert(11,"Pink")
+        for i in range(11):
             collis.itemconfig(i,fg = collis.get(i))
         gridobj(collis,8,0,1,2)
     else:
@@ -205,8 +222,8 @@ def showsnapslider():
         for i in range(hig):
             GList.append(can.create_rectangle(0,i*ge,wi,i*ge,fill = "lightgrey",outline="lightgrey"))
         can.create_rectangle(-wi, -hi, wi, hi)
-        can.create_line(-wi,hi/2,wi,hi/2, dash=(8, 24))
-        can.create_line(wi/2,-hi,wi/2,hi, dash=(8, 24))
+        can.create_line(-wi,hi/2,wi,hi/2, dash=(8, 24), fill = "grey")
+        can.create_line(wi/2,-hi,wi/2,hi, dash=(8, 24), fill = "grey")
         for i in range(len(AllPoints)):
             can.tag_raise(AllPoints[i-1])
         var3.set("Snap: " + str(ge))
@@ -264,8 +281,8 @@ for i in range(wig):
 for i in range(hig):
     GList.append(can.create_rectangle(0,i*ge,wi,i*ge,fill = "lightgrey",outline="lightgrey"))
 can.create_rectangle(-wi, -hi, wi, hi)
-can.create_line(-wi,hi/2,wi,hi/2, dash=(8, 24))
-can.create_line(wi/2,-hi,wi/2,hi, dash=(8, 24))
+can.create_line(-wi,hi/2,wi,hi/2, dash=(8, 24), fill = "grey")
+can.create_line(wi/2,-hi,wi/2,hi, dash=(8, 24), fill = "grey")
 #---------------------------------------------------------------------------------------------#
 # Gridding everything
 gridobj(can,1,1,6,6)
