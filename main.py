@@ -52,6 +52,10 @@ GList = []
 color = "Black"
 type = "Line"
 var5 = StringVar()
+valuelist = []
+for i in range(105):
+    if i % 5 == 0:
+        valuelist.append(i)
 #---------------------------------------------------------------------------------------------#
 # Functions
 def gridobj(obj,coln,rown,cex,rex):
@@ -174,12 +178,17 @@ def showtypechoice():
         typelbl.destroy()
         B=0
 
+def valuecheck(value):
+    global valuelist
+    newvalue = min(valuelist, key=lambda x:abs(x-float(value)))
+    snapslider.set(newvalue)
+
 def showsnapslider():
-    global snapslider, C, snapamnt, GList, wi, hi
+    global snapslider, C, snapamnt, GList, wi, hi, AllPoints
     if(C==0):
         C = 1
         var3str = var3.get()
-        snapslider = Scale(master,from_ = 10, relief = RAISED, to = 50)
+        snapslider = Scale(master,from_ = 10, relief = RAISED, to = 50, command = valuecheck)
         if var3str != "Snap: 10":
             sp = var3str.split(" ")
             snapslider.set(int(sp[1]))
@@ -198,6 +207,8 @@ def showsnapslider():
         can.create_rectangle(-wi, -hi, wi, hi)
         can.create_line(-wi,hi/2,wi,hi/2, dash=(8, 24))
         can.create_line(wi/2,-hi,wi/2,hi, dash=(8, 24))
+        for i in range(len(AllPoints)):
+            can.tag_raise(AllPoints[i-1])
         var3.set("Snap: " + str(ge))
         snapamnt = ge
         snapslider.destroy()
@@ -207,6 +218,14 @@ def undolast():
     global AllPoints, can
     p = len(AllPoints)-1
     print("Undone "+str(AllPoints[p]))
+    a_file = open("Hud.txt", "r")
+    list_of_lines = a_file.readlines()
+    print(len(AllPoints))
+    list_of_lines[10+len(AllPoints)*2] = ""
+    list_of_lines[11+len(AllPoints)*2] = ""
+    a_file = open("Hud.txt", "w")
+    a_file.writelines(list_of_lines)
+    a_file.close()
     can.delete(AllPoints[p])
     AllPoints.pop(p)
 
@@ -262,4 +281,3 @@ gridobj(back,7,4,1,1)
 # Finishing it all
 master.mainloop()
 #---------------------------------------------------------------------------------------------#
-
