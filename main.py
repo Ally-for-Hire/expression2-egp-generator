@@ -71,7 +71,7 @@ def callback(event):
     global Clicks, lx, ly, relx, rely, Point, Points, color, type, var2, AllPoints
     Clicks+=1
     relx = (wi/2-event.x)*-1
-    rely = hi/2-event.y
+    rely = (hi/2-event.y)
     def torelx(x):
         return ((wi/2-x)*-1)*2
     def torely(y):
@@ -94,7 +94,7 @@ def callback(event):
             Ax = torelx(Points[1][0])
             Ay = torely(Points[1][1])
             C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
-            file.write("E:egpLine({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
+            file.write("E:egpLine({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy*-1,Ax,Ay*-1))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
@@ -138,6 +138,29 @@ def callback(event):
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
+    if type == "Circle (Filled)":
+        if len(Points)==1:
+            print("Point 1 Placed")
+        elif len(Points)==2:
+            print("Point 2 Placed")
+            L = Points[0][0]-Points[0][0]/2
+            I = Points[0][1]+Points[0][1]/2
+            Pp = L,I
+            AllPoints.append(can.create_oval(Points[0],Points[1],fill=color,outline = color))
+            file = open("Hud.txt","a")
+            Rw = Points[0][0]-Points[1][0]
+            Rh = Points[0][1]-Points[1][1]
+            Originx = Points[0][0]-Rw/2 
+            Originy = Points[0][1]-Rh/2
+            Ox = torelx(Originx)
+            Oy = torely(Originy)
+            Ax = Rw
+            Ay = Rh
+            C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
+            file.write("E:egpCircle({0},Res+vec2({1},{2}),vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,abs(Ax),abs(Ay)))
+            file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
+            file.close()
+            Points = []
     if type == "Circle":
         if len(Points)==1:
             print("Point 1 Placed")
@@ -146,14 +169,18 @@ def callback(event):
             L = Points[0][0]-Points[0][0]/2
             I = Points[0][1]+Points[0][1]/2
             Pp = L,I
-            AllPoints.append(can.create_oval(Points[0],Points[1],fill=color))
+            AllPoints.append(can.create_oval(Points[0],Points[1],outline=color))
             file = open("Hud.txt","a")
-            Ox = torelx(Points[0][0])
-            Oy = torely(Points[0][1])
-            Ax = torelx(Points[1][0])
-            Ay = torely(Points[1][1])
+            Rw = Points[0][0]-Points[1][0]
+            Rh = Points[0][1]-Points[1][1]
+            Originx = Points[0][0]-Rw/2 
+            Originy = Points[0][1]-Rh/2
+            Ox = torelx(Originx)
+            Oy = torely(Originy)
+            Ax = Rw
+            Ay = Rh
             C = colors.to_rgba(color)[0]*255,colors.to_rgba(color)[1]*255,colors.to_rgba(color)[2]*255
-            file.write("E:egpCircle({0},Res+vec2({1},{2}),Res+vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,Ax,Ay))
+            file.write("E:egpCircle({0},Res+vec2({1},{2}),vec2({3},{4}))\n".format(len(AllPoints),Ox,Oy,abs(Ax),abs(Ay)))
             file.write("    E:egpColor({0},vec{1})\n".format(len(AllPoints),C))
             file.close()
             Points = []
@@ -194,7 +221,8 @@ def showtypechoice():
         typelbl.insert(1, "Rectangle")
         typelbl.insert(2,"Box")
         typelbl.insert(3, "Circle")
-        typelbl.insert(4, "Line")
+        typelbl.insert(4, "Circle (Filled)")
+        typelbl.insert(5, "Line")
 
         gridobj(typelbl,8,2,1,1)
     else:
