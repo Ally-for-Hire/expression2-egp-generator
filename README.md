@@ -6,7 +6,7 @@ A modern, dark-themed HUD layout tool for Garry's Mod EGP / Expression2. It beha
 - Tools: select, line (variable thickness), rectangle (outline), box (filled), circle (outline/filled), polygon, text
 - Layers: add, duplicate, rename, reorder, show/hide, lock, color override
 - Project save/load (`.e2hud.json`)
-- Export to `Hud.txt` (Expression2 EGP code) or copy to clipboard
+- Export to as a `.txt` file or copy to clipboard
 - Zoom/pan and resolution presets
 - Resolution scaling: export adapts to any screen size using your project aspect ratio
 
@@ -54,4 +54,4 @@ Dynamic text is updated every 100ms in a `if(clk()) { interval(100) }` block.
 - Output scales to the current screen size using the project resolution as the reference.
 
 ## UI Notes
-- Default font size is 18 in-game, displayed at half size in the editor (9).
+- Default font size is 18 in-game, displayed at half size in the editor (9) to account for strange font behaviours here.
