@@ -10,10 +10,16 @@ from model import Project, Shape
 
 class HudExporter:
     def __init__(self, path: str) -> None:
+        """Description: Init
+        Inputs: path: str
+        """
         self.path = path
         self._header_lines: list[str] = []
 
     def export(self, project: Project) -> None:
+        """Description: Export
+        Inputs: project: Project
+        """
         self._header_lines = self._build_header(project)
         with open(self.path, "w", encoding="utf-8") as file:
             file.writelines(self._header_lines)
@@ -35,6 +41,9 @@ class HudExporter:
             self._write_lines(self._build_dynamic_block(dynamic_text))
 
     def _build_header(self, project: Project) -> list[str]:
+        """Description: Build header
+        Inputs: project: Project
+        """
         inputs = ["EGP:wirelink"]
         for input_def in project.inputs:
             if not input_def.name:
@@ -60,27 +69,45 @@ class HudExporter:
         ]
 
     def _write_lines(self, lines: Iterable[str]) -> None:
+        """Description: Write lines
+        Inputs: lines: Iterable[str]
+        """
         with open(self.path, "a", encoding="utf-8") as file:
             file.writelines(lines)
 
     def _offset_expr(self, resolution: Tuple[int, int], point: Tuple[float, float]) -> str:
+        """Description: Offset expr
+        Inputs: resolution: Tuple[int, int], point: Tuple[float, float]
+        """
         dx = point[0] - resolution[0] / 2
         dy = point[1] - resolution[1] / 2
         return f"Res+vec2( {dx}*Scale:x(), {dy}*Scale:y())"
 
     def _size_expr(self, value: float) -> str:
+        """Description: Size expr
+        Inputs: value: float
+        """
         return f"vec2( {value}*Scale:x(), {value}*Scale:x())"
 
     def _size_xy_expr(self, width: float, height: float) -> str:
+        """Description: Size xy expr
+        Inputs: width: float, height: float
+        """
         return f"vec2( {width}*Scale:x(), {height}*Scale:y())"
 
     def _color_vec(self, color: str) -> Tuple[int, int, int]:
+        """Description: Color vec
+        Inputs: color: str
+        """
         color = color.lstrip("#")
         if len(color) != 6:
             return (255, 255, 255)
         return (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
 
     def _export_shape(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None) -> None:
+        """Description: Export shape
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None
+        """
         if shape.kind == "line":
             self._export_line(egp_id, resolution, layer_color, shape)
         elif shape.kind == "rect":
@@ -97,6 +124,9 @@ class HudExporter:
             self._export_text(egp_id, resolution, layer_color, shape, text_expr)
 
     def _export_line(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+        """Description: Export line
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        """
         if len(shape.points) < 2:
             return
         (x1, y1), (x2, y2) = shape.points[0], shape.points[1]
@@ -126,6 +156,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _export_rect(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+        """Description: Export rect
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        """
         if len(shape.points) < 2:
             return
         cx, cy, w, h = self._bounds_center(shape.points[0], shape.points[1])
@@ -138,6 +171,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _export_box(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+        """Description: Export box
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        """
         if len(shape.points) < 2:
             return
         cx, cy, w, h = self._bounds_center(shape.points[0], shape.points[1])
@@ -150,6 +186,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _export_circle(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+        """Description: Export circle
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        """
         if len(shape.points) < 2:
             return
         cx, cy, w, h = self._bounds_center(shape.points[0], shape.points[1])
@@ -163,6 +202,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _export_poly(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+        """Description: Export poly
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        """
         if len(shape.points) < 3:
             return
         points = [self._offset_expr(resolution, point) for point in shape.points]
@@ -175,6 +217,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _export_text(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None) -> None:
+        """Description: Export text
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None
+        """
         if not shape.points:
             return
         point = self._offset_expr(resolution, shape.points[0])
@@ -198,6 +243,9 @@ class HudExporter:
         self._write_lines(lines)
 
     def _bounds_center(self, p1: Tuple[float, float], p2: Tuple[float, float]) -> Tuple[float, float, float, float]:
+        """Description: Bounds center
+        Inputs: p1: Tuple[float, float], p2: Tuple[float, float]
+        """
         min_x = min(p1[0], p2[0])
         max_x = max(p1[0], p2[0])
         min_y = min(p1[1], p2[1])
@@ -209,10 +257,16 @@ class HudExporter:
         return cx, cy, w, h
 
     def _quote_text(self, text: str) -> str:
+        """Description: Quote text
+        Inputs: text: str
+        """
         escaped = text.replace("\\", "\\\\").replace("\"", "\\\"")
         return f"\"{escaped}\""
 
     def _text_expression(self, project: Project, shape: Shape) -> Tuple[str, bool]:
+        """Description: Text expression
+        Inputs: project: Project, shape: Shape
+        """
         if shape.kind != "text":
             return self._quote_text(shape.text), False
         token_re = re.compile(r"%([A-Za-z0-9_]+)%(R(\d))?")
@@ -241,6 +295,9 @@ class HudExporter:
         return expr, True
 
     def _build_dynamic_block(self, dynamic_text: Dict[int, str]) -> list[str]:
+        """Description: Build dynamic block
+        Inputs: dynamic_text: Dict[int, str]
+        """
         lines = ["if (clk())\n", "{\n", "   interval(100)\n"]
         for egp_id, expr in dynamic_text.items():
             lines.append(f"   EGP:egpSetText( {egp_id}, {expr} )\n")

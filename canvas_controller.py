@@ -20,6 +20,9 @@ class CanvasController:
         get_shape_type: Callable[[], str],
         snap_amount: int,
     ) -> None:
+        """Description: Init
+        Inputs: master: tk.Tk, exporter: HudExporter, get_color: Callable[[], str], get_shape_type: Callable[[], str], snap_amount: int
+        """
         self._exporter = exporter
         self._get_color = get_color
         self._get_shape_type = get_shape_type
@@ -34,12 +37,21 @@ class CanvasController:
 
     @property
     def shape_count(self) -> int:
+        """Description: Shape count
+        Inputs: None
+        """
         return len(self._shape_items)
 
     def set_snap_amount(self, amount: int) -> None:
+        """Description: Set snap amount
+        Inputs: amount: int
+        """
         self._snap_amount = amount
 
     def draw_grid(self, grid_size: int) -> None:
+        """Description: Draw grid
+        Inputs: grid_size: int
+        """
         for item_id in self._grid_items:
             self.canvas.delete(item_id)
         self._grid_items.clear()
@@ -91,6 +103,9 @@ class CanvasController:
             self.canvas.tag_raise(item_id)
 
     def undo_last(self) -> None:
+        """Description: Undo last
+        Inputs: None
+        """
         if not self._shape_items:
             print("Nothing to undo")
             return
@@ -101,6 +116,9 @@ class CanvasController:
         self._shape_items.pop(last_index)
 
     def on_click(self, event: tk.Event) -> None:
+        """Description: On click
+        Inputs: event: tk.Event
+        """
         lx = event.x
         ly = event.y
         point = (self._snap(lx) - 5, self._snap(ly))
@@ -121,19 +139,34 @@ class CanvasController:
             self._handle_circle(color, fill=False)
 
     def _snap(self, value: float) -> float:
+        """Description: Snap
+        Inputs: value: float
+        """
         return round((value / self._snap_amount), 0) * self._snap_amount
 
     def _to_egp_x(self, x: float) -> float:
+        """Description: To egp x
+        Inputs: x: float
+        """
         return ((config.CANVAS_WIDTH / 2 - x) * -1) * 2
 
     def _to_egp_y(self, y: float) -> float:
+        """Description: To egp y
+        Inputs: y: float
+        """
         return (config.CANVAS_HEIGHT / 2 - y) * 2
 
     def _color_to_rgb(self, color: str) -> Tuple[float, float, float]:
+        """Description: Color to rgb
+        Inputs: color: str
+        """
         rgba = colors.to_rgba(color)
         return rgba[0] * 255, rgba[1] * 255, rgba[2] * 255
 
     def _handle_line(self, color: str) -> None:
+        """Description: Handle line
+        Inputs: color: str
+        """
         if len(self._points) == 1:
             print("Point 1 Placed")
             return
@@ -154,6 +187,9 @@ class CanvasController:
         self._points.clear()
 
     def _handle_rectangle(self, color: str) -> None:
+        """Description: Handle rectangle
+        Inputs: color: str
+        """
         if len(self._points) == 1:
             print("Point 1 Placed")
             return
@@ -177,6 +213,9 @@ class CanvasController:
         self._points.clear()
 
     def _handle_box(self, color: str) -> None:
+        """Description: Handle box
+        Inputs: color: str
+        """
         if len(self._points) == 1:
             print("Point 1 Placed")
             return
@@ -200,6 +239,9 @@ class CanvasController:
         self._points.clear()
 
     def _handle_circle(self, color: str, fill: bool) -> None:
+        """Description: Handle circle
+        Inputs: color: str, fill: bool
+        """
         if len(self._points) == 1:
             print("Point 1 Placed")
             return

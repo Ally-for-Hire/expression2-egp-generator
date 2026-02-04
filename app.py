@@ -14,6 +14,9 @@ from storage import load_project, save_project
 
 class EgpApp:
     def __init__(self) -> None:
+        """Description: Init
+        Inputs: None
+        """
         self.root = tk.Tk()
         self.root.title(config.WINDOW_TITLE)
         self.root.configure(bg=config.THEME["bg"])
@@ -41,9 +44,15 @@ class EgpApp:
         self._push_undo_state()
 
     def run(self) -> None:
+        """Description: Run
+        Inputs: None
+        """
         self.root.mainloop()
 
     def _build_menu(self) -> None:
+        """Description: Build menu
+        Inputs: None
+        """
         menu = tk.Menu(self.root)
         self.root.config(menu=menu)
 
@@ -78,6 +87,9 @@ class EgpApp:
         menu.add_cascade(label="Help", menu=help_menu)
 
     def _build_layout(self) -> None:
+        """Description: Build layout
+        Inputs: None
+        """
         self.main_frame = tk.Frame(self.root, bg=config.THEME["bg"])
         self.main_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -110,11 +122,16 @@ class EgpApp:
         self.canvas_view.canvas.grid(row=0, column=0, sticky="nsew")
 
         self._build_toolbar()
+        self._update_selection_button_states()
+        self._update_finish_poly_button()
         self._build_properties_panel()
         self._build_layers_panel()
         self._build_status_bar()
 
     def _build_toolbar(self) -> None:
+        """Description: Build toolbar
+        Inputs: None
+        """
         header = tk.Label(self.toolbar_frame, text="Tools", bg=config.THEME["panel"], fg=config.THEME["text"], font=("Segoe UI", 12, "bold"))
         header.pack(anchor="w", pady=(0, 10))
 
@@ -148,7 +165,7 @@ class EgpApp:
         sep = tk.Frame(self.toolbar_frame, bg=config.THEME["panel_alt"], height=2)
         sep.pack(fill=tk.X, pady=8)
 
-        finish_poly = tk.Button(
+        self.finish_poly_btn = tk.Button(
             self.toolbar_frame,
             text="Finish Poly",
             command=self.canvas_view.finish_poly,
@@ -157,7 +174,6 @@ class EgpApp:
             relief=tk.FLAT,
             pady=4,
         )
-        finish_poly.pack(fill=tk.X, pady=4)
 
         delete_btn = tk.Button(
             self.toolbar_frame,
@@ -192,6 +208,8 @@ class EgpApp:
         )
         mirror_y.pack(fill=tk.X, pady=4)
 
+        self._selection_only_buttons = [delete_btn, mirror_x, mirror_y]
+
         zoom_in = tk.Button(
             self.toolbar_frame,
             text="Zoom +",
@@ -225,15 +243,35 @@ class EgpApp:
         )
         fit.pack(fill=tk.X, pady=4)
 
+    def _update_selection_button_states(self) -> None:
+        """Description: Update selection button states
+        Inputs: None
+        """
+        enabled = self.canvas_view.tool == "select"
+        state = tk.NORMAL if enabled else tk.DISABLED
+        for button in getattr(self, "_selection_only_buttons", []):
+            button.configure(state=state)
+
+    def _update_finish_poly_button(self) -> None:
+        """Description: Update finish poly button
+        Inputs: None
+        """
+        if self.canvas_view.tool == "poly":
+            if not self.finish_poly_btn.winfo_ismapped():
+                self.finish_poly_btn.pack(fill=tk.X, pady=4)
+        else:
+            if self.finish_poly_btn.winfo_ismapped():
+                self.finish_poly_btn.pack_forget()
+
     def _build_properties_panel(self) -> None:
+        """Description: Build properties panel
+        Inputs: None
+        """
         self.properties_frame = tk.Frame(self.sidebar_frame, bg=config.THEME["panel"])
         self.properties_frame.grid(row=0, column=0, sticky="new")
 
-        title = tk.Label(self.properties_frame, text="Properties", bg=config.THEME["panel"], fg=config.THEME["text"], font=("Segoe UI", 12, "bold"))
-        title.grid(row=0, column=0, columnspan=2, sticky="w")
-
+        self.properties_title = tk.Label(self.properties_frame, text="Properties", bg=config.THEME["panel"], fg=config.THEME["text"], font=("Segoe UI", 12, "bold"))
         self.editing_label = tk.Label(self.properties_frame, text="Editing: Tool Defaults", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
-        self.editing_label.grid(row=1, column=0, columnspan=2, sticky="w", pady=(0, 8))
 
         self.stroke_var = tk.StringVar(value=config.DEFAULT_STROKE)
         self.fill_var = tk.StringVar(value=config.DEFAULT_FILL)
@@ -243,26 +281,18 @@ class EgpApp:
         self.font_size_var = tk.IntVar(value=config.DEFAULT_FONT_SIZE)
         self.align_var = tk.StringVar(value="left")
 
-        row = 2
-        row = self._add_labeled_entry("Stroke", self.stroke_var, row)
-        row = self._add_labeled_entry("Fill", self.fill_var, row)
-        row = self._add_labeled_spin("Stroke Width", self.stroke_width_var, row, 1, 24)
-        row = self._add_labeled_entry("Text", self.text_var, row)
-        row = self._add_labeled_option("Font", self.font_var, config.FONTS, row)
-        row = self._add_labeled_spin("Font Size", self.font_size_var, row, 6, 128)
-        row = self._add_labeled_option("Align", self.align_var, ["left", "center", "right"], row)
+        self.stroke_label, self.stroke_entry = self._create_labeled_entry("Stroke", self.stroke_var)
+        self.fill_label, self.fill_entry = self._create_labeled_entry("Fill", self.fill_var)
+        self.stroke_width_label, self.stroke_width_spin = self._create_labeled_spin("Stroke Width", self.stroke_width_var, 1, 24)
+        self.text_label, self.text_entry = self._create_labeled_entry("Text", self.text_var)
+        self.font_label, self.font_menu = self._create_labeled_option("Font", self.font_var, config.FONTS)
+        self.font_size_label, self.font_size_spin = self._create_labeled_spin("Font Size", self.font_size_var, 6, 128)
+        self.align_label, self.align_menu = self._create_labeled_option("Align", self.align_var, ["left", "center", "right"])
 
-        coord_label = tk.Label(self.properties_frame, text="Selection Center (X,Y)", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
-        coord_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(8, 2))
-        row += 1
-
+        self.coord_label = tk.Label(self.properties_frame, text="Selection Center (X,Y)", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
         self.center_x_entry = tk.Entry(self.properties_frame, textvariable=self._center_x_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
-        self.center_x_entry.grid(row=row, column=0, sticky="ew", pady=2, padx=(0, 4))
         self.center_y_entry = tk.Entry(self.properties_frame, textvariable=self._center_y_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
-        self.center_y_entry.grid(row=row, column=1, sticky="ew", pady=2)
-        row += 1
-
-        set_center_btn = tk.Button(
+        self.set_center_btn = tk.Button(
             self.properties_frame,
             text="Set Center",
             command=self._apply_center_offset,
@@ -271,18 +301,12 @@ class EgpApp:
             relief=tk.FLAT,
             pady=4,
         )
-        set_center_btn.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(4, 4))
-        row += 1
 
-        palette_label = tk.Label(self.properties_frame, text="Palette", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
-        palette_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(8, 4))
-        row += 1
-
-        palette_frame = tk.Frame(self.properties_frame, bg=config.THEME["panel"])
-        palette_frame.grid(row=row, column=0, columnspan=2, sticky="w")
+        self.palette_label = tk.Label(self.properties_frame, text="Palette", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
+        self.palette_frame = tk.Frame(self.properties_frame, bg=config.THEME["panel"])
         for color in config.COLORS:
             btn = tk.Button(
-                palette_frame,
+                self.palette_frame,
                 bg=color,
                 width=2,
                 height=1,
@@ -290,9 +314,8 @@ class EgpApp:
                 command=lambda c=color: self._apply_palette_color(c),
             )
             btn.pack(side=tk.LEFT, padx=2, pady=2)
-        row += 1
 
-        apply_button = tk.Button(
+        self.apply_button = tk.Button(
             self.properties_frame,
             text="Apply to Selection",
             command=self._apply_properties_to_selection,
@@ -301,10 +324,22 @@ class EgpApp:
             relief=tk.FLAT,
             pady=4,
         )
-        apply_button.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(8, 4))
 
         self.properties_frame.columnconfigure(0, weight=1)
         self.properties_frame.columnconfigure(1, weight=1)
+
+        self._property_rows = [
+            ("stroke", self._grid_stroke_row),
+            ("fill", self._grid_fill_row),
+            ("stroke_width", self._grid_stroke_width_row),
+            ("text", self._grid_text_row),
+            ("font", self._grid_font_row),
+            ("font_size", self._grid_font_size_row),
+            ("align", self._grid_align_row),
+            ("selection_center", self._grid_selection_center_row),
+            ("palette", self._grid_palette_row),
+            ("apply", self._grid_apply_row),
+        ]
 
         self.stroke_var.trace_add("write", lambda *_: self._sync_tool_settings("stroke"))
         self.fill_var.trace_add("write", lambda *_: self._sync_tool_settings("fill"))
@@ -314,7 +349,171 @@ class EgpApp:
         self.font_size_var.trace_add("write", lambda *_: self._sync_tool_settings("font_size"))
         self.align_var.trace_add("write", lambda *_: self._sync_tool_settings("align"))
 
+        self._apply_property_layout(self._property_visibility([]))
+
+    def _create_labeled_entry(self, label: str, variable: tk.StringVar) -> tuple[tk.Label, tk.Entry]:
+        """Description: Create labeled entry
+        Inputs: label: str, variable: tk.StringVar
+        """
+        lbl = tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
+        entry = tk.Entry(self.properties_frame, textvariable=variable, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
+        return lbl, entry
+
+    def _create_labeled_spin(self, label: str, variable: tk.IntVar, min_val: int, max_val: int) -> tuple[tk.Label, tk.Spinbox]:
+        """Description: Create labeled spin
+        Inputs: label: str, variable: tk.IntVar, min_val: int, max_val: int
+        """
+        lbl = tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
+        spin = tk.Spinbox(
+            self.properties_frame,
+            from_=min_val,
+            to=max_val,
+            textvariable=variable,
+            bg=config.THEME["panel_alt"],
+            fg=config.THEME["text"],
+            buttonbackground=config.THEME["panel_alt"],
+            relief=tk.FLAT,
+            command=self._sync_tool_settings,
+        )
+        spin.bind("<Return>", lambda _e: self._sync_tool_settings())
+        spin.bind("<FocusOut>", lambda _e: self._sync_tool_settings())
+        return lbl, spin
+
+    def _create_labeled_option(self, label: str, variable: tk.StringVar, options: list[str]) -> tuple[tk.Label, tk.OptionMenu]:
+        """Description: Create labeled option
+        Inputs: label: str, variable: tk.StringVar, options: list[str]
+        """
+        lbl = tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
+        menu = tk.OptionMenu(self.properties_frame, variable, *options)
+        menu.configure(bg=config.THEME["panel_alt"], fg=config.THEME["text"], relief=tk.FLAT, highlightthickness=0, activebackground=config.THEME["accent"])
+        menu["menu"].configure(bg=config.THEME["panel_alt"], fg=config.THEME["text"], relief=tk.FLAT)
+        return lbl, menu
+
+    def _apply_property_layout(self, visible: set[str]) -> None:
+        """Description: Apply property layout
+        Inputs: visible: set[str]
+        """
+        for widget in self.properties_frame.grid_slaves():
+            widget.grid_forget()
+        row = 0
+        self.properties_title.grid(row=row, column=0, columnspan=2, sticky="w")
+        row += 1
+        self.editing_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(0, 8))
+        row += 1
+        for key, grid_fn in self._property_rows:
+            if key in visible:
+                row = grid_fn(row)
+
+    def _grid_stroke_row(self, row: int) -> int:
+        """Description: Grid stroke row
+        Inputs: row: int
+        """
+        self.stroke_label.grid(row=row, column=0, sticky="w")
+        self.stroke_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_fill_row(self, row: int) -> int:
+        """Description: Grid fill row
+        Inputs: row: int
+        """
+        self.fill_label.grid(row=row, column=0, sticky="w")
+        self.fill_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_stroke_width_row(self, row: int) -> int:
+        """Description: Grid stroke width row
+        Inputs: row: int
+        """
+        self.stroke_width_label.grid(row=row, column=0, sticky="w")
+        self.stroke_width_spin.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_text_row(self, row: int) -> int:
+        """Description: Grid text row
+        Inputs: row: int
+        """
+        self.text_label.grid(row=row, column=0, sticky="w")
+        self.text_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_font_row(self, row: int) -> int:
+        """Description: Grid font row
+        Inputs: row: int
+        """
+        self.font_label.grid(row=row, column=0, sticky="w")
+        self.font_menu.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_font_size_row(self, row: int) -> int:
+        """Description: Grid font size row
+        Inputs: row: int
+        """
+        self.font_size_label.grid(row=row, column=0, sticky="w")
+        self.font_size_spin.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_align_row(self, row: int) -> int:
+        """Description: Grid align row
+        Inputs: row: int
+        """
+        self.align_label.grid(row=row, column=0, sticky="w")
+        self.align_menu.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_selection_center_row(self, row: int) -> int:
+        """Description: Grid selection center row
+        Inputs: row: int
+        """
+        self.coord_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(8, 2))
+        row += 1
+        self.center_x_entry.grid(row=row, column=0, sticky="ew", pady=2, padx=(0, 4))
+        self.center_y_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        row += 1
+        self.set_center_btn.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(4, 4))
+        return row + 1
+
+    def _grid_palette_row(self, row: int) -> int:
+        """Description: Grid palette row
+        Inputs: row: int
+        """
+        self.palette_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(8, 4))
+        row += 1
+        self.palette_frame.grid(row=row, column=0, columnspan=2, sticky="w")
+        return row + 1
+
+    def _grid_apply_row(self, row: int) -> int:
+        """Description: Grid apply row
+        Inputs: row: int
+        """
+        self.apply_button.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(8, 4))
+        return row + 1
+
+    def _property_visibility(self, shapes: list[Shape]) -> set[str]:
+        """Description: Property visibility
+        Inputs: shapes: list[Shape]
+        """
+        has_selection = bool(shapes)
+        tool = self.canvas_view.tool
+        selected_kinds = {shape.kind for shape in shapes} if has_selection else set()
+        all_text = has_selection and all(kind == "text" for kind in selected_kinds)
+        any_text = all_text or (not has_selection and tool == "text")
+        all_fillable = has_selection and all(kind in ("box", "circle_filled", "poly") for kind in selected_kinds)
+        show_fill = all_fillable or (not has_selection and tool in ("box", "circle_filled", "poly"))
+        show_stroke_width = (has_selection and any(kind != "text" for kind in selected_kinds)) or (not has_selection and tool != "text")
+        visible = {"stroke", "palette"}
+        if show_fill:
+            visible.add("fill")
+        if show_stroke_width:
+            visible.add("stroke_width")
+        if any_text:
+            visible.update({"text", "font", "font_size", "align"})
+        if has_selection:
+            visible.update({"selection_center", "apply"})
+        return visible
     def _build_layers_panel(self) -> None:
+        """Description: Build layers panel
+        Inputs: None
+        """
         self.layers_frame = tk.Frame(self.sidebar_frame, bg=config.THEME["panel"])
         self.layers_frame.grid(row=1, column=0, sticky="nsew", pady=(16, 0))
         self.layers_frame.rowconfigure(1, weight=1)
@@ -383,11 +582,17 @@ class EgpApp:
         input_controls.columnconfigure(1, weight=1)
 
     def _build_status_bar(self) -> None:
+        """Description: Build status bar
+        Inputs: None
+        """
         self.status_var = tk.StringVar(value="")
         status = tk.Label(self.root, textvariable=self.status_var, bg=config.THEME["panel_alt"], fg=config.THEME["muted"], anchor="w")
         status.pack(fill=tk.X, side=tk.BOTTOM)
 
     def _bind_shortcuts(self) -> None:
+        """Description: Bind shortcuts
+        Inputs: None
+        """
         self.root.bind("<Control-s>", self._on_save_shortcut)
         self.root.bind("<Control-o>", self._on_open_shortcut)
         self.root.bind("<Control-n>", self._on_new_shortcut)
@@ -400,60 +605,96 @@ class EgpApp:
         self.root.bind("<BackSpace>", self._on_delete_shortcut)
 
     def _text_input_focused(self) -> bool:
+        """Description: Text input focused
+        Inputs: None
+        """
         widget = self.root.focus_get()
         if widget is None:
             return False
         return isinstance(widget, (tk.Entry, tk.Text, tk.Spinbox))
 
     def _on_save_shortcut(self, _event: tk.Event) -> None:
+        """Description: On save shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.save_project()
 
     def _on_open_shortcut(self, _event: tk.Event) -> None:
+        """Description: On open shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.open_project()
 
     def _on_new_shortcut(self, _event: tk.Event) -> None:
+        """Description: On new shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.new_project()
 
     def _on_export_shortcut(self, _event: tk.Event) -> None:
+        """Description: On export shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.export_hud()
 
     def _on_fit_shortcut(self, _event: tk.Event) -> None:
+        """Description: On fit shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self._fit_to_view()
 
     def _on_undo_shortcut(self, _event: tk.Event) -> None:
+        """Description: On undo shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.undo()
 
     def _on_copy_shortcut(self, _event: tk.Event) -> None:
+        """Description: On copy shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.canvas_view.copy_selected()
 
     def _on_paste_shortcut(self, _event: tk.Event) -> None:
+        """Description: On paste shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.canvas_view.paste_clipboard()
 
     def _on_delete_shortcut(self, _event: tk.Event) -> None:
+        """Description: On delete shortcut
+        Inputs: _event: tk.Event
+        """
         if self._text_input_focused():
             return
         self.canvas_view.delete_selected()
 
     def _resolution_label(self, resolution: tuple[int, int]) -> str:
+        """Description: Resolution label
+        Inputs: resolution: tuple[int, int]
+        """
         return f"{resolution[0]}x{resolution[1]}"
 
     def _scale_project(self, old_res: tuple[int, int], new_res: tuple[int, int]) -> None:
+        """Description: Scale project
+        Inputs: old_res: tuple[int, int], new_res: tuple[int, int]
+        """
         if old_res == new_res:
             return
         scale_x = new_res[0] / old_res[0]
@@ -465,6 +706,9 @@ class EgpApp:
                 shape.stroke_width = max(1, int(shape.stroke_width * scale_avg))
 
     def _on_resolution_change(self, label: str) -> None:
+        """Description: On resolution change
+        Inputs: label: str
+        """
         parts = label.split("x")
         if len(parts) != 2:
             return
@@ -479,59 +723,60 @@ class EgpApp:
         self._update_status()
 
     def _set_tool(self, tool: str) -> None:
+        """Description: Set tool
+        Inputs: tool: str
+        """
         self.canvas_view.set_tool(tool)
         for key, button in self.tool_buttons.items():
             if key == tool:
                 button.configure(bg=config.THEME["accent"], fg=config.THEME["text"])
             else:
                 button.configure(bg=config.THEME["panel_alt"], fg=config.THEME["text"])
+        self._apply_property_layout(self._property_visibility(self._selected_shapes()))
+        self._update_selection_button_states()
+        self.canvas_view.draw()
+        self._update_finish_poly_button()
+
+    def _selected_shapes(self) -> list[Shape]:
+        """Description: Selected shapes
+        Inputs: None
+        """
+        shapes: list[Shape] = []
+        selected = self.canvas_view.selected_shape_ids
+        if not selected:
+            return shapes
+        for layer in self.project.layers:
+            for shape in layer.shapes:
+                if shape.id in selected:
+                    shapes.append(shape)
+        return shapes
 
     def _fit_to_view(self) -> None:
+        """Description: Fit to view
+        Inputs: None
+        """
         self.canvas_view.fit_to_view()
         self.canvas_view.draw()
         self._update_status()
 
     def zoom_in(self) -> None:
+        """Description: Zoom in
+        Inputs: None
+        """
         self.canvas_view.zoom_in()
         self._update_status()
 
     def zoom_out(self) -> None:
+        """Description: Zoom out
+        Inputs: None
+        """
         self.canvas_view.zoom_out()
         self._update_status()
 
-    def _add_labeled_entry(self, label: str, variable: tk.StringVar, row: int) -> int:
-        tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10)).grid(row=row, column=0, sticky="w")
-        entry = tk.Entry(self.properties_frame, textvariable=variable, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
-        entry.grid(row=row, column=1, sticky="ew", pady=2)
-        return row + 1
-
-    def _add_labeled_spin(self, label: str, variable: tk.IntVar, row: int, min_val: int, max_val: int) -> int:
-        tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10)).grid(row=row, column=0, sticky="w")
-        spin = tk.Spinbox(
-            self.properties_frame,
-            from_=min_val,
-            to=max_val,
-            textvariable=variable,
-            bg=config.THEME["panel_alt"],
-            fg=config.THEME["text"],
-            buttonbackground=config.THEME["panel_alt"],
-            relief=tk.FLAT,
-            command=self._sync_tool_settings,
-        )
-        spin.grid(row=row, column=1, sticky="ew", pady=2)
-        spin.bind("<Return>", lambda _e: self._sync_tool_settings())
-        spin.bind("<FocusOut>", lambda _e: self._sync_tool_settings())
-        return row + 1
-
-    def _add_labeled_option(self, label: str, variable: tk.StringVar, options: list[str], row: int) -> int:
-        tk.Label(self.properties_frame, text=label, bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10)).grid(row=row, column=0, sticky="w")
-        menu = tk.OptionMenu(self.properties_frame, variable, *options)
-        menu.configure(bg=config.THEME["panel_alt"], fg=config.THEME["text"], relief=tk.FLAT, highlightthickness=0, activebackground=config.THEME["accent"])
-        menu["menu"].configure(bg=config.THEME["panel_alt"], fg=config.THEME["text"], relief=tk.FLAT)
-        menu.grid(row=row, column=1, sticky="ew", pady=2)
-        return row + 1
-
     def _apply_palette_color(self, color: str) -> None:
+        """Description: Apply palette color
+        Inputs: color: str
+        """
         if self.canvas_view.selected_shape_ids:
             self.stroke_var.set(color)
             if self.fill_var.get():
@@ -540,6 +785,9 @@ class EgpApp:
             self.stroke_var.set(color)
 
     def _sync_tool_settings(self, changed_key: str | None = None) -> None:
+        """Description: Sync tool settings
+        Inputs: changed_key: str | None
+        """
         if self._suppress_property_update:
             return
         updates = {
@@ -561,16 +809,23 @@ class EgpApp:
             self._mark_dirty()
 
     def _apply_properties_to_selection(self) -> None:
+        """Description: Apply properties to selection
+        Inputs: None
+        """
         self.canvas_view.apply_settings_to_selected()
         self._mark_dirty()
 
     def _on_selection_changed(self, shapes: list[Shape]) -> None:
+        """Description: On selection changed
+        Inputs: shapes: list[Shape]
+        """
         self._suppress_property_update = True
         if not shapes:
             self.editing_label.config(text="Editing: Tool Defaults")
             self._center_x_var.set("")
             self._center_y_var.set("")
             self._suppress_property_update = False
+            self._apply_property_layout(self._property_visibility(shapes))
             return
         count = len(shapes)
         self.editing_label.config(text=f"Editing: Selection ({count})")
@@ -587,12 +842,19 @@ class EgpApp:
             self._center_x_var.set(f"{center[0]:.1f}")
             self._center_y_var.set(f"{center[1]:.1f}")
         self._suppress_property_update = False
+        self._apply_property_layout(self._property_visibility(shapes))
 
     def _on_shape_created(self, shape: Shape) -> None:
+        """Description: On shape created
+        Inputs: shape: Shape
+        """
         self.canvas_view.set_selected_shapes({shape.id})
         self._update_status()
 
     def _apply_center_offset(self) -> None:
+        """Description: Apply center offset
+        Inputs: None
+        """
         try:
             x = float(self._center_x_var.get())
             y = float(self._center_y_var.get())
@@ -602,6 +864,9 @@ class EgpApp:
         self._mark_dirty()
 
     def _refresh_layers(self) -> None:
+        """Description: Refresh layers
+        Inputs: None
+        """
         self.layer_list.delete(0, tk.END)
         for layer in self.project.layers:
             vis = "V" if layer.visible else "-"
@@ -613,6 +878,9 @@ class EgpApp:
         self._refresh_inputs()
 
     def _refresh_inputs(self) -> None:
+        """Description: Refresh inputs
+        Inputs: None
+        """
         if not hasattr(self, "inputs_list"):
             return
         self.inputs_list.delete(0, tk.END)
@@ -620,6 +888,9 @@ class EgpApp:
             self.inputs_list.insert(tk.END, f"{input_def.name}:{input_def.type}")
 
     def _select_active_layer(self) -> None:
+        """Description: Select active layer
+        Inputs: None
+        """
         for idx, layer in enumerate(self.project.layers):
             if layer.id == self.project.active_layer_id:
                 self.layer_list.selection_clear(0, tk.END)
@@ -628,6 +899,9 @@ class EgpApp:
                 break
 
     def _on_layer_selected(self, _event: tk.Event) -> None:
+        """Description: On layer selected
+        Inputs: _event: tk.Event
+        """
         selection = self.layer_list.curselection()
         if not selection:
             return
@@ -638,12 +912,18 @@ class EgpApp:
         self._update_status()
 
     def _get_selected_layer_index(self) -> int | None:
+        """Description: Get selected layer index
+        Inputs: None
+        """
         selection = self.layer_list.curselection()
         if not selection:
             return None
         return selection[0]
 
     def add_layer(self) -> None:
+        """Description: Add layer
+        Inputs: None
+        """
         name = simpledialog.askstring("New Layer", "Layer name:", parent=self.root)
         if not name:
             name = f"Layer {len(self.project.layers) + 1}"
@@ -657,6 +937,9 @@ class EgpApp:
         self._mark_dirty()
 
     def duplicate_layer(self) -> None:
+        """Description: Duplicate layer
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -675,6 +958,9 @@ class EgpApp:
         self._mark_dirty()
 
     def delete_layer(self) -> None:
+        """Description: Delete layer
+        Inputs: None
+        """
         if len(self.project.layers) <= 1:
             messagebox.showinfo("Layers", "At least one layer is required.")
             return
@@ -691,6 +977,9 @@ class EgpApp:
         self._mark_dirty()
 
     def move_layer(self, direction: int) -> None:
+        """Description: Move layer
+        Inputs: direction: int
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -705,6 +994,9 @@ class EgpApp:
         self._mark_dirty()
 
     def rename_layer(self) -> None:
+        """Description: Rename layer
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -717,6 +1009,9 @@ class EgpApp:
         self._mark_dirty()
 
     def set_layer_color(self) -> None:
+        """Description: Set layer color
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -730,6 +1025,9 @@ class EgpApp:
         self._mark_dirty()
 
     def clear_layer_color(self) -> None:
+        """Description: Clear layer color
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -740,6 +1038,9 @@ class EgpApp:
         self._mark_dirty()
 
     def toggle_layer_visibility(self) -> None:
+        """Description: Toggle layer visibility
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -750,6 +1051,9 @@ class EgpApp:
         self._mark_dirty()
 
     def toggle_layer_lock(self) -> None:
+        """Description: Toggle layer lock
+        Inputs: None
+        """
         index = self._get_selected_layer_index()
         if index is None:
             return
@@ -759,6 +1063,9 @@ class EgpApp:
         self._mark_dirty()
 
     def add_input(self) -> None:
+        """Description: Add input
+        Inputs: None
+        """
         value = simpledialog.askstring("Add Input", "Enter input as NAME:TYPE (Normal or String):", parent=self.root)
         if not value:
             return
@@ -785,6 +1092,9 @@ class EgpApp:
         self._mark_dirty()
 
     def remove_input(self) -> None:
+        """Description: Remove input
+        Inputs: None
+        """
         if not hasattr(self, "inputs_list"):
             return
         selection = self.inputs_list.curselection()
@@ -798,6 +1108,9 @@ class EgpApp:
         self._mark_dirty()
 
     def new_project(self) -> None:
+        """Description: New project
+        Inputs: None
+        """
         if not self._confirm_discard():
             return
         self.project = Project.new(config.DEFAULT_RESOLUTION)
@@ -810,6 +1123,9 @@ class EgpApp:
         self._history = [self.project.to_dict()]
 
     def open_project(self) -> None:
+        """Description: Open project
+        Inputs: None
+        """
         if not self._confirm_discard():
             return
         path = filedialog.askopenfilename(
@@ -828,6 +1144,9 @@ class EgpApp:
         self._history = [self.project.to_dict()]
 
     def save_project(self) -> None:
+        """Description: Save project
+        Inputs: None
+        """
         if not self.project_path:
             self.save_project_as()
             return
@@ -836,6 +1155,9 @@ class EgpApp:
         self._update_status()
 
     def save_project_as(self) -> None:
+        """Description: Save project as
+        Inputs: None
+        """
         path = filedialog.asksaveasfilename(
             title="Save Project",
             defaultextension=config.PROJECT_EXTENSION,
@@ -849,6 +1171,9 @@ class EgpApp:
         self._update_status()
 
     def export_hud(self) -> None:
+        """Description: Export hud
+        Inputs: None
+        """
         path = filedialog.asksaveasfilename(
             title="Export HUD",
             defaultextension=".txt",
@@ -861,6 +1186,9 @@ class EgpApp:
         messagebox.showinfo("Export", "HUD exported successfully.")
 
     def copy_hud_to_clipboard(self) -> None:
+        """Description: Copy hud to clipboard
+        Inputs: None
+        """
         fd, path = tempfile.mkstemp(suffix=".txt")
         os.close(fd)
         try:
@@ -879,11 +1207,17 @@ class EgpApp:
         messagebox.showinfo("Clipboard", "HUD copied to clipboard.")
 
     def _mark_dirty(self) -> None:
+        """Description: Mark dirty
+        Inputs: None
+        """
         self.is_dirty = True
         self._update_status()
         self._push_undo_state()
 
     def _update_status(self) -> None:
+        """Description: Update status
+        Inputs: None
+        """
         res = self._resolution_label(self.project.resolution)
         zoom = int(self.canvas_view.zoom * 100)
         name = self.project_path if self.project_path else "Untitled"
@@ -891,6 +1225,9 @@ class EgpApp:
         self.status_var.set(f"{name}{dirty}  |  {res}  |  Zoom {zoom}%")
 
     def _push_undo_state(self) -> None:
+        """Description: Push undo state
+        Inputs: None
+        """
         if self._restoring:
             return
         payload = self.project.to_dict()
@@ -901,6 +1238,9 @@ class EgpApp:
             self._history.pop(0)
 
     def undo(self) -> None:
+        """Description: Undo
+        Inputs: None
+        """
         if len(self._history) < 2:
             return
         prev_zoom = self.canvas_view.zoom
@@ -922,14 +1262,23 @@ class EgpApp:
         self._restoring = False
 
     def _confirm_discard(self) -> bool:
+        """Description: Confirm discard
+        Inputs: None
+        """
         if not self.is_dirty:
             return True
         return messagebox.askyesno("Unsaved Changes", "You have unsaved changes. Continue?")
 
     def show_about(self) -> None:
+        """Description: Show about
+        Inputs: None
+        """
         messagebox.showinfo("About", "E2 HUD Designer\nModern HUD layout tool for Garry's Mod EGP.")
 
 
 def run_app() -> None:
+    """Description: Run app
+    Inputs: None
+    """
     app = EgpApp()
     app.run()

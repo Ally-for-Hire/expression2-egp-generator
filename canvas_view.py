@@ -23,6 +23,9 @@ class CanvasView:
         on_view_changed=None,
         on_shape_created=None,
     ) -> None:
+        """Description: Init
+        Inputs: master: tk.Widget, project: Project, on_selection_changed, on_project_changed, on_view_changed, on_shape_created
+        """
         self.project = project
         self.canvas = tk.Canvas(master, bg=config.THEME["bg"], highlightthickness=0)
 
@@ -82,9 +85,15 @@ class CanvasView:
 
     @property
     def selected_shape_ids(self) -> Set[str]:
+        """Description: Selected shape ids
+        Inputs: None
+        """
         return set(self._selected_shape_ids)
 
     def set_project(self, project: Project, fit_view: bool = True, redraw: bool = True) -> None:
+        """Description: Set project
+        Inputs: project: Project, fit_view: bool, redraw: bool
+        """
         self.project = project
         self.active_layer_id = project.active_layer_id
         self._selected_shape_ids.clear()
@@ -97,21 +106,36 @@ class CanvasView:
             self.draw()
 
     def set_tool(self, tool: str) -> None:
+        """Description: Set tool
+        Inputs: tool: str
+        """
         self.tool = tool
         self._clear_temp()
 
     def set_active_layer(self, layer_id: str) -> None:
+        """Description: Set active layer
+        Inputs: layer_id: str
+        """
         self.active_layer_id = layer_id
 
     def set_grid(self, minor: int, major: int) -> None:
+        """Description: Set grid
+        Inputs: minor: int, major: int
+        """
         self.grid_minor = max(5, int(minor))
         self.grid_major = max(self.grid_minor, int(major))
         self.draw()
 
     def update_settings(self, updates: Dict[str, object]) -> None:
+        """Description: Update settings
+        Inputs: updates: Dict[str, object]
+        """
         self.settings.update(updates)
 
     def apply_settings_to_selected(self, keys: Optional[List[str]] = None) -> None:
+        """Description: Apply settings to selected
+        Inputs: keys: Optional[List[str]]
+        """
         if not self._selected_shape_ids:
             return
         key_set = set(keys) if keys else None
@@ -136,6 +160,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def set_selected_shapes(self, shape_ids: Set[str]) -> None:
+        """Description: Set selected shapes
+        Inputs: shape_ids: Set[str]
+        """
         self._selected_shape_ids = set(shape_ids)
         self._update_selection_highlight()
         if self._on_selection_changed:
@@ -143,6 +170,9 @@ class CanvasView:
             self._on_selection_changed([shape for shape in shapes if shape is not None])
 
     def move_selected_to_center_offset(self, offset: Point) -> None:
+        """Description: Move selected to center offset
+        Inputs: offset: Point
+        """
         if not self._selected_shape_ids:
             return
         res_w, res_h = self.project.resolution
@@ -161,6 +191,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def selection_center_offset(self) -> Optional[Point]:
+        """Description: Selection center offset
+        Inputs: None
+        """
         center = self._selection_center()
         if center is None:
             return None
@@ -168,6 +201,9 @@ class CanvasView:
         return (center[0] - res_w / 2, center[1] - res_h / 2)
 
     def fit_to_view(self) -> None:
+        """Description: Fit to view
+        Inputs: None
+        """
         width = max(1, self.canvas.winfo_width())
         height = max(1, self.canvas.winfo_height())
         res_w, res_h = self.project.resolution
@@ -178,12 +214,21 @@ class CanvasView:
         self._notify_view_changed()
 
     def zoom_in(self) -> None:
+        """Description: Zoom in
+        Inputs: None
+        """
         self._zoom_at_center(config.ZOOM_STEP)
 
     def zoom_out(self) -> None:
+        """Description: Zoom out
+        Inputs: None
+        """
         self._zoom_at_center(1 / config.ZOOM_STEP)
 
     def draw(self) -> None:
+        """Description: Draw
+        Inputs: None
+        """
         self.canvas.delete("grid")
         self.canvas.delete("shape")
         self.canvas.delete("selection")
@@ -204,12 +249,18 @@ class CanvasView:
         self._notify_selection_changed_live()
 
     def _notify_selection_changed_live(self) -> None:
+        """Description: Notify selection changed live
+        Inputs: None
+        """
         if not self._on_selection_changed:
             return
         shapes = [self._find_shape(shape_id) for shape_id in self._selected_shape_ids]
         self._on_selection_changed([shape for shape in shapes if shape is not None])
 
     def _draw_grid(self) -> None:
+        """Description: Draw grid
+        Inputs: None
+        """
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
         if width <= 0 or height <= 0:
@@ -234,6 +285,9 @@ class CanvasView:
         center_x = res_w / 2
         center_y = res_h / 2
         def start_for(step: int) -> Tuple[int, int]:
+            """Description: Start for
+            Inputs: step: int
+            """
             sx = center_x + (math.floor((min_x - center_x) / step) * step)
             sy = center_y + (math.floor((min_y - center_y) / step) * step)
             return int(sx), int(sy)
@@ -258,13 +312,18 @@ class CanvasView:
         self.canvas.create_line(center[0], tl[1], center[0], br[1], fill=config.THEME["grid_center"], width=2, tags="grid")
 
     def _draw_shape(self, shape: Shape) -> List[int]:
+        """Description: Draw shape
+        Inputs: shape: Shape
+        """
         if not shape.points:
             return []
         item_ids: List[int] = []
         stroke_width = max(1, int(shape.stroke_width))
         layer_color = self._layer_color_for_shape(shape)
         stroke = layer_color or shape.stroke
-        fill = layer_color or shape.fill
+        fill = shape.fill
+        if fill is None and layer_color and shape.kind not in ("box", "circle_filled", "poly"):
+            fill = layer_color
 
         if shape.kind == "line" and len(shape.points) >= 2:
             p1 = self.world_to_screen(shape.points[0])
@@ -280,11 +339,16 @@ class CanvasView:
         elif shape.kind in ("rect", "box") and len(shape.points) >= 2:
             p1 = self.world_to_screen(shape.points[0])
             p2 = self.world_to_screen(shape.points[1])
-            fill_color = fill if shape.kind == "box" else ""
+            if shape.kind == "box":
+                outline = fill or stroke
+                fill_color = fill or stroke
+            else:
+                outline = stroke
+                fill_color = ""
             item_ids.append(
                 self.canvas.create_rectangle(
                     p1[0], p1[1], p2[0], p2[1],
-                    outline=stroke,
+                    outline=outline,
                     width=stroke_width,
                     fill=fill_color,
                     tags="shape",
@@ -293,11 +357,16 @@ class CanvasView:
         elif shape.kind in ("circle", "circle_filled") and len(shape.points) >= 2:
             p1 = self.world_to_screen(shape.points[0])
             p2 = self.world_to_screen(shape.points[1])
-            fill_color = fill if shape.kind == "circle_filled" else ""
+            if shape.kind == "circle_filled":
+                outline = fill or stroke
+                fill_color = fill or stroke
+            else:
+                outline = stroke
+                fill_color = ""
             item_ids.append(
                 self.canvas.create_oval(
                     p1[0], p1[1], p2[0], p2[1],
-                    outline=stroke,
+                    outline=outline,
                     width=stroke_width,
                     fill=fill_color,
                     tags="shape",
@@ -308,11 +377,11 @@ class CanvasView:
             for point in shape.points:
                 sp = self.world_to_screen(point)
                 pts.extend([sp[0], sp[1]])
-            fill_color = fill or ""
+            fill_color = fill or stroke
             item_ids.append(
                 self.canvas.create_polygon(
                     pts,
-                    outline=stroke,
+                    outline=fill_color,
                     width=stroke_width,
                     fill=fill_color,
                     tags="shape",
@@ -336,29 +405,41 @@ class CanvasView:
         return item_ids
 
     def world_to_screen(self, point: Point) -> Point:
+        """Description: World to screen
+        Inputs: point: Point
+        """
         return (point[0] * self.zoom + self.pan_x, point[1] * self.zoom + self.pan_y)
 
     def screen_to_world(self, point: Point) -> Point:
+        """Description: Screen to world
+        Inputs: point: Point
+        """
         return ((point[0] - self.pan_x) / self.zoom, (point[1] - self.pan_y) / self.zoom)
 
     def _on_resize(self, _event: tk.Event) -> None:
+        """Description: On resize
+        Inputs: _event: tk.Event
+        """
         if self.auto_fit:
             self.fit_to_view()
         self.draw()
 
     def _on_left_press(self, event: tk.Event) -> None:
+        """Description: On left press
+        Inputs: event: tk.Event
+        """
         self.canvas.focus_set()
         if self.tool == "select":
+            handle = self._find_scale_handle_at(event)
+            if handle:
+                self._begin_scale_drag(handle, event)
+                return
             vertex = self._find_vertex_at(event)
             if vertex:
                 self._drag_vertex = vertex
                 shape = self._find_shape(vertex[0])
                 if shape and len(shape.points) > vertex[1]:
                     self._drag_vertex_start = shape.points[vertex[1]]
-                return
-            handle = self._find_scale_handle_at(event)
-            if handle:
-                self._begin_scale_drag(handle, event)
                 return
             if self._hit_selection_bounds(event):
                 self._begin_move_drag(event)
@@ -384,6 +465,9 @@ class CanvasView:
             self._create_text_shape(world)
 
     def _on_left_drag(self, event: tk.Event) -> None:
+        """Description: On left drag
+        Inputs: event: tk.Event
+        """
         if self.tool == "select":
             if self._move_drag:
                 self._update_move_drag(event)
@@ -403,9 +487,19 @@ class CanvasView:
         if not self._drag_start or self._temp_item is None:
             return
         world = self._snap_if_ctrl(self.screen_to_world((event.x, event.y)), event)
-        self._update_temp_shape(self._drag_start, world)
+        if self.tool in ("circle", "circle_filled") and self._ctrl_down(event):
+            dx = world[0] - self._drag_start[0]
+            dy = world[1] - self._drag_start[1]
+            p1 = (self._drag_start[0] - dx, self._drag_start[1] - dy)
+            p2 = (self._drag_start[0] + dx, self._drag_start[1] + dy)
+            self._update_temp_shape(p1, p2)
+        else:
+            self._update_temp_shape(self._drag_start, world)
 
     def _on_left_release(self, event: tk.Event) -> None:
+        """Description: On left release
+        Inputs: event: tk.Event
+        """
         if self.tool == "select":
             if self._move_drag:
                 self._end_move_drag()
@@ -426,25 +520,47 @@ class CanvasView:
         if not self._drag_start:
             return
         world = self._snap_if_ctrl(self.screen_to_world((event.x, event.y)), event)
-        self._finalize_drag_shape(self._drag_start, world)
+        if self.tool in ("circle", "circle_filled") and self._ctrl_down(event):
+            dx = world[0] - self._drag_start[0]
+            dy = world[1] - self._drag_start[1]
+            p1 = (self._drag_start[0] - dx, self._drag_start[1] - dy)
+            p2 = (self._drag_start[0] + dx, self._drag_start[1] + dy)
+            self._finalize_drag_shape(p1, p2)
+        else:
+            self._finalize_drag_shape(self._drag_start, world)
         self._drag_start = None
         self._drag_start_screen = None
 
     def _on_left_double(self, _event: tk.Event) -> None:
+        """Description: On left double
+        Inputs: _event: tk.Event
+        """
         if self.tool == "poly":
             self._finish_poly()
 
     def _on_escape(self, _event: tk.Event) -> None:
+        """Description: On escape
+        Inputs: _event: tk.Event
+        """
         self._clear_temp()
 
     def _on_enter(self, _event: tk.Event) -> None:
+        """Description: On enter
+        Inputs: _event: tk.Event
+        """
         if self.tool == "poly":
             self._finish_poly()
 
     def _on_right_press(self, event: tk.Event) -> None:
+        """Description: On right press
+        Inputs: event: tk.Event
+        """
         self._drag_start = (event.x, event.y)
 
     def _on_right_drag(self, event: tk.Event) -> None:
+        """Description: On right drag
+        Inputs: event: tk.Event
+        """
         if self._drag_start is None:
             return
         dx = event.x - self._drag_start[0]
@@ -457,21 +573,36 @@ class CanvasView:
         self._notify_view_changed()
 
     def _on_middle_press(self, event: tk.Event) -> None:
+        """Description: On middle press
+        Inputs: event: tk.Event
+        """
         self._drag_start = (event.x, event.y)
 
     def _on_middle_drag(self, event: tk.Event) -> None:
+        """Description: On middle drag
+        Inputs: event: tk.Event
+        """
         self._on_right_drag(event)
 
     def _on_mouse_wheel(self, event: tk.Event) -> None:
+        """Description: On mouse wheel
+        Inputs: event: tk.Event
+        """
         factor = config.ZOOM_STEP if event.delta > 0 else 1 / config.ZOOM_STEP
         self._zoom_at(event.x, event.y, factor)
 
     def _zoom_at_center(self, factor: float) -> None:
+        """Description: Zoom at center
+        Inputs: factor: float
+        """
         width = self.canvas.winfo_width()
         height = self.canvas.winfo_height()
         self._zoom_at(width / 2, height / 2, factor)
 
     def _zoom_at(self, x: float, y: float, factor: float) -> None:
+        """Description: Zoom at
+        Inputs: x: float, y: float, factor: float
+        """
         old_zoom = self.zoom
         new_zoom = min(config.ZOOM_MAX, max(config.ZOOM_MIN, self.zoom * factor))
         if new_zoom == old_zoom:
@@ -485,6 +616,9 @@ class CanvasView:
         self._notify_view_changed()
 
     def _select_at(self, event: tk.Event) -> bool:
+        """Description: Select at
+        Inputs: event: tk.Event
+        """
         hit = self.canvas.find_overlapping(event.x - 2, event.y - 2, event.x + 2, event.y + 2)
         if not hit:
             self.set_selected_shapes(set())
@@ -509,6 +643,9 @@ class CanvasView:
         return False
 
     def _update_selection_highlight(self) -> None:
+        """Description: Update selection highlight
+        Inputs: None
+        """
         self.canvas.delete("selection")
         if not self._selected_shape_ids:
             return
@@ -517,15 +654,27 @@ class CanvasView:
             return
         p1 = self.world_to_screen(bounds[0])
         p2 = self.world_to_screen(bounds[1])
+        if self.tool != "select":
+            self.canvas.create_rectangle(
+                p1[0], p1[1], p2[0], p2[1],
+                outline=config.THEME["grid_major"],
+                width=1,
+                tags="selection",
+            )
+            return
         self.canvas.create_rectangle(
             p1[0], p1[1], p2[0], p2[1],
             outline=config.THEME["accent_alt"],
             dash=(4, 2),
             tags="selection",
         )
+        self._draw_vertex_handles()
         self._draw_scale_handles(p1, p2)
 
     def _shape_bounds(self, shape: Shape) -> Optional[Tuple[Point, Point]]:
+        """Description: Shape bounds
+        Inputs: shape: Shape
+        """
         if shape.kind == "text":
             if not shape.points:
                 return None
@@ -560,6 +709,9 @@ class CanvasView:
         return (min(xs), min(ys)), (max(xs), max(ys))
 
     def _create_temp_shape(self, start: Point, end: Point) -> Optional[int]:
+        """Description: Create temp shape
+        Inputs: start: Point, end: Point
+        """
         if self.tool == "line":
             p1 = self.world_to_screen(start)
             p2 = self.world_to_screen(end)
@@ -575,6 +727,9 @@ class CanvasView:
         return None
 
     def _update_temp_shape(self, start: Point, end: Point) -> None:
+        """Description: Update temp shape
+        Inputs: start: Point, end: Point
+        """
         if self._temp_item is None:
             return
         p1 = self.world_to_screen(start)
@@ -582,6 +737,9 @@ class CanvasView:
         self.canvas.coords(self._temp_item, p1[0], p1[1], p2[0], p2[1])
 
     def _finalize_drag_shape(self, start: Point, end: Point) -> None:
+        """Description: Finalize drag shape
+        Inputs: start: Point, end: Point
+        """
         if self._active_layer_locked():
             self._clear_temp()
             return
@@ -603,6 +761,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def _shape_from_drag(self, start: Point, end: Point) -> Optional[Shape]:
+        """Description: Shape from drag
+        Inputs: start: Point, end: Point
+        """
         shape_id = self.project.new_shape_id()
         stroke = str(self.settings["stroke"])
         stroke_width = int(self.settings["stroke_width"])
@@ -620,6 +781,9 @@ class CanvasView:
         return None
 
     def _create_text_shape(self, point: Point) -> None:
+        """Description: Create text shape
+        Inputs: point: Point
+        """
         if self._active_layer_locked():
             return
         text = self._prompt_text(self.settings["text"])
@@ -646,6 +810,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def _update_poly_preview(self) -> None:
+        """Description: Update poly preview
+        Inputs: None
+        """
         if self._temp_item is not None:
             self.canvas.delete(self._temp_item)
         if len(self._poly_points) < 2:
@@ -657,6 +824,9 @@ class CanvasView:
         self._temp_item = self.canvas.create_line(*points, fill=self.settings["stroke"], dash=(4, 2), tags="shape")
 
     def _finish_poly(self) -> None:
+        """Description: Finish poly
+        Inputs: None
+        """
         if len(self._poly_points) < 3:
             self._clear_temp()
             return
@@ -679,18 +849,30 @@ class CanvasView:
         self._notify_project_changed()
 
     def _notify_project_changed(self) -> None:
+        """Description: Notify project changed
+        Inputs: None
+        """
         if self._on_project_changed:
             self._on_project_changed()
 
     def _notify_view_changed(self) -> None:
+        """Description: Notify view changed
+        Inputs: None
+        """
         if self._on_view_changed:
             self._on_view_changed()
 
     def finish_poly(self) -> None:
+        """Description: Finish poly
+        Inputs: None
+        """
         if self.tool == "poly":
             self._finish_poly()
 
     def _clear_temp(self) -> None:
+        """Description: Clear temp
+        Inputs: None
+        """
         if self._temp_item is not None:
             self.canvas.delete(self._temp_item)
         self._temp_item = None
@@ -700,6 +882,9 @@ class CanvasView:
         self._selection_box = None
 
     def _find_shape(self, shape_id: str) -> Optional[Shape]:
+        """Description: Find shape
+        Inputs: shape_id: str
+        """
         for layer in self.project.layers:
             for shape in layer.shapes:
                 if shape.id == shape_id:
@@ -707,16 +892,25 @@ class CanvasView:
         return None
 
     def _layer_color_for_shape(self, shape: Shape) -> Optional[str]:
+        """Description: Layer color for shape
+        Inputs: shape: Shape
+        """
         for layer in self.project.layers:
             if shape in layer.shapes:
                 return layer.color
         return None
 
     def _active_layer_locked(self) -> bool:
+        """Description: Active layer locked
+        Inputs: None
+        """
         layer = self.project.get_layer(self.active_layer_id)
         return bool(layer and layer.locked)
 
     def _update_selection_box(self, event: tk.Event) -> None:
+        """Description: Update selection box
+        Inputs: event: tk.Event
+        """
         if not self._drag_start:
             return
         if self._selection_box is None:
@@ -728,6 +922,9 @@ class CanvasView:
             self.canvas.coords(self._selection_box, self._drag_start[0], self._drag_start[1], event.x, event.y)
 
     def _finalize_selection_box(self, event: tk.Event) -> None:
+        """Description: Finalize selection box
+        Inputs: event: tk.Event
+        """
         if not self._drag_start:
             return
         start = self._drag_start
@@ -767,6 +964,9 @@ class CanvasView:
         self.set_selected_shapes(selected)
 
     def delete_selected(self) -> None:
+        """Description: Delete selected
+        Inputs: None
+        """
         if not self._selected_shape_ids:
             return
         for layer in self.project.layers:
@@ -776,6 +976,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def copy_selected(self) -> None:
+        """Description: Copy selected
+        Inputs: None
+        """
         if not self._selected_shape_ids:
             return
         payloads: List[Dict] = []
@@ -786,6 +989,9 @@ class CanvasView:
         self._clipboard = payloads
 
     def paste_clipboard(self, offset: Point = (10, 10)) -> None:
+        """Description: Paste clipboard
+        Inputs: offset: Point
+        """
         if not self._clipboard:
             return
         if self._active_layer_locked():
@@ -808,6 +1014,9 @@ class CanvasView:
         self._notify_project_changed()
 
     def mirror_selected(self, axis: str, copy: bool = True) -> None:
+        """Description: Mirror selected
+        Inputs: axis: str, copy: bool
+        """
         if not self._selected_shape_ids:
             return
         res_w, res_h = self.project.resolution
@@ -841,9 +1050,15 @@ class CanvasView:
         self._notify_project_changed()
 
     def _ctrl_down(self, event: tk.Event) -> bool:
+        """Description: Ctrl down
+        Inputs: event: tk.Event
+        """
         return bool(event.state & 0x0004)
 
     def _snap_if_ctrl(self, world: Point, event: tk.Event) -> Point:
+        """Description: Snap if ctrl
+        Inputs: world: Point, event: tk.Event
+        """
         if not self._ctrl_down(event):
             return world
         base_major = max(2, int(self.grid_major))
@@ -866,6 +1081,9 @@ class CanvasView:
         return self._snap_to_text_edges(snapped)
 
     def _snap_to_text_edges(self, world: Point) -> Point:
+        """Description: Snap to text edges
+        Inputs: world: Point
+        """
         threshold = 6 / max(self.zoom, 0.001)
         target_x = world[0]
         target_y = world[1]
@@ -894,9 +1112,15 @@ class CanvasView:
         return (target_x, target_y)
 
     def _shift_down(self, event: tk.Event) -> bool:
+        """Description: Shift down
+        Inputs: event: tk.Event
+        """
         return bool(event.state & 0x0001)
 
     def _find_vertex_at(self, event: tk.Event) -> Optional[Tuple[str, int]]:
+        """Description: Find vertex at
+        Inputs: event: tk.Event
+        """
         world = self.screen_to_world((event.x, event.y))
         threshold = 12 / max(self.zoom, 0.001)
         selected = self._selected_shape_ids
@@ -920,6 +1144,9 @@ class CanvasView:
         return None
 
     def _drag_vertex_to(self, event: tk.Event) -> None:
+        """Description: Drag vertex to
+        Inputs: event: tk.Event
+        """
         if not self._drag_vertex:
             return
         shape = self._find_shape(self._drag_vertex[0])
@@ -937,6 +1164,9 @@ class CanvasView:
         self.draw()
 
     def _selection_center(self) -> Optional[Point]:
+        """Description: Selection center
+        Inputs: None
+        """
         if not self._selected_shape_ids:
             return None
         xs: List[float] = []
@@ -953,6 +1183,9 @@ class CanvasView:
         return (sum(xs) / len(xs), sum(ys) / len(ys))
 
     def _prompt_text(self, initial: str) -> Optional[str]:
+        """Description: Prompt text
+        Inputs: initial: str
+        """
         try:
             import tkinter.simpledialog as simpledialog
         except Exception:
@@ -960,6 +1193,9 @@ class CanvasView:
         return simpledialog.askstring("Text", "Enter text:", initialvalue=str(initial))
 
     def _selection_bounds(self) -> Optional[Tuple[Point, Point]]:
+        """Description: Selection bounds
+        Inputs: None
+        """
         if not self._selected_shape_ids:
             return None
         xs: List[float] = []
@@ -978,7 +1214,28 @@ class CanvasView:
             return None
         return (min(xs), min(ys)), (max(xs), max(ys))
 
+    def _draw_vertex_handles(self) -> None:
+        """Description: Draw vertex handles
+        Inputs: None
+        """
+        size = 4
+        for shape_id in self._selected_shape_ids:
+            shape = self._find_shape(shape_id)
+            if not shape or not shape.points:
+                continue
+            for point in shape.points:
+                sp = self.world_to_screen(point)
+                self.canvas.create_rectangle(
+                    sp[0] - size, sp[1] - size, sp[0] + size, sp[1] + size,
+                    outline=config.THEME["accent"],
+                    fill=config.THEME["panel_alt"],
+                    tags="selection",
+                )
+
     def _draw_scale_handles(self, p1: Point, p2: Point) -> None:
+        """Description: Draw scale handles
+        Inputs: p1: Point, p2: Point
+        """
         size = 6
         corners = [
             (p1[0], p1[1]),
@@ -995,6 +1252,9 @@ class CanvasView:
             )
 
     def _find_scale_handle_at(self, event: tk.Event) -> Optional[str]:
+        """Description: Find scale handle at
+        Inputs: event: tk.Event
+        """
         bounds = self._selection_bounds()
         if not bounds:
             return None
@@ -1013,6 +1273,9 @@ class CanvasView:
         return None
 
     def _begin_scale_drag(self, handle: str, event: tk.Event) -> None:
+        """Description: Begin scale drag
+        Inputs: handle: str, event: tk.Event
+        """
         bounds = self._selection_bounds()
         if not bounds:
             return
@@ -1032,6 +1295,9 @@ class CanvasView:
         }
 
     def _update_scale_drag(self, event: tk.Event) -> None:
+        """Description: Update scale drag
+        Inputs: event: tk.Event
+        """
         if not self._scale_drag:
             return
         center = self._scale_drag["center"]
@@ -1060,12 +1326,18 @@ class CanvasView:
         self.draw()
 
     def _end_scale_drag(self) -> None:
+        """Description: End scale drag
+        Inputs: None
+        """
         if not self._scale_drag:
             return
         self._scale_drag = None
         self._notify_project_changed()
 
     def _hit_selection_bounds(self, event: tk.Event) -> bool:
+        """Description: Hit selection bounds
+        Inputs: event: tk.Event
+        """
         bounds = self._selection_bounds()
         if not bounds:
             return False
@@ -1074,6 +1346,9 @@ class CanvasView:
         return x1 <= world[0] <= x2 and y1 <= world[1] <= y2
 
     def _begin_move_drag(self, event: tk.Event) -> None:
+        """Description: Begin move drag
+        Inputs: event: tk.Event
+        """
         if not self._selected_shape_ids:
             return
         start = self.screen_to_world((event.x, event.y))
@@ -1087,6 +1362,9 @@ class CanvasView:
         }
 
     def _update_move_drag(self, event: tk.Event) -> None:
+        """Description: Update move drag
+        Inputs: event: tk.Event
+        """
         if not self._move_drag:
             return
         start = self._move_drag["start"]
@@ -1106,12 +1384,18 @@ class CanvasView:
         self.draw()
 
     def _end_move_drag(self) -> None:
+        """Description: End move drag
+        Inputs: None
+        """
         if not self._move_drag:
             return
         self._move_drag = None
         self._notify_project_changed()
 
     def _iter_shapes(self) -> List[Shape]:
+        """Description: Iter shapes
+        Inputs: None
+        """
         shapes: List[Shape] = []
         for layer in self.project.layers:
             shapes.extend(layer.shapes)

@@ -1,14 +1,20 @@
-# Expression2 EGP Generator (Modern HUD Designer)
+# Expression2 HUD Creation Kit
 
-A modern, dark-themed HUD layout tool for Garry's Mod EGP / Expression2. It behaves like a lightweight drawing app with layers, tools, zoom/pan, and project save/load.
+A standalone, no-context HUD layout editor for Garry's Mod Expression2 EGP. This is a lightweight, dark-themed drawing app focused on building HUDs from preset primitives and exporting ready-to-paste E2 code. No extra setup beyond Python is required.
 
-## Features
-- Tools: select, line (variable thickness), rectangle (outline), box (filled), circle (outline/filled), polygon, text
-- Layers: add, duplicate, rename, reorder, show/hide, lock, color override
-- Project save/load (`.e2hud.json`)
-- Export to as a `.txt` file or copy to clipboard
-- Zoom/pan and resolution presets
-- Resolution scaling: export adapts to any screen size using your project aspect ratio
+## What This Is
+- A desktop editor for assembling HUD layouts from shapes and text.
+- A project format you can save/load and keep iterating on.
+- An exporter that outputs E2 EGP code using a normalized `EGP:` wirelink style.
+
+## Key Features
+- **Tools:** Select, Line, Rect (outline), Box (filled), Circle (outline), Circle+ (filled), Poly, Text
+- **Selection:** click select, box select, multi-select, live selection center, delete, mirror X/Y
+- **Editing:** drag vertices, snap to grid/text edges with Ctrl, axis-lock with Shift
+- **Layers:** add/duplicate/rename/reorder, show/hide, lock, color override
+- **Grid + View:** zoom, pan, fit-to-view, resolution presets, project-scaled output
+- **Project I/O:** save/load `.e2hud.json`, export to file or copy to clipboard
+- **Dynamic Text:** `%NAME%` and `%NAME%R1` token support with 100ms updates
 
 ## Run
 ```bash
@@ -20,38 +26,38 @@ This uses PyInstaller.
 
 ```powershell
 python -m pip install --upgrade pyinstaller
-pyinstaller --noconfirm --onefile --windowed --name "E2-HUD-Designer" main.py
+pyinstaller --noconfirm --onefile --windowed --name "e2_hud_designer_v1.1-alpha" main.py
 ```
 
-The EXE will be created in `dist/`.
+The EXE is written to `dist/`.
 
-## Controls
-- Left click to draw or select
-- Drag with Select to box-select multiple shapes
-- Double click (or Enter) to finish polygons
-- Delete/Backspace to remove selected shapes
-- Ctrl to snap to grid + text edges
-- Shift while moving or dragging vertices locks to horizontal/vertical
-- Drag polygon points (Select tool) to edit vertices
-- Ctrl+Z to undo
-- Ctrl+C / Ctrl+V to copy/paste shapes (disabled while typing in fields)
-- Right or middle mouse drag to pan
-- Mouse wheel to zoom
+## Controls (Quick)
+- **Left click** to draw or select
+- **Drag** with Select to box-select
+- **Double click / Enter** to finish polygons
+- **Delete / Backspace** deletes selection
+- **Ctrl** snaps to grid + text edges (and resizes circles from center)
+- **Shift** locks movement to horizontal/vertical while moving or dragging vertices
+- **Ctrl+Z** undo
+- **Ctrl+C / Ctrl+V** copy/paste (disabled while typing in fields)
+- **Right or Middle drag** to pan
+- **Mouse wheel** to zoom
 
-## Dynamic Text Inputs
-Define inputs in the Inputs panel as `NAME:TYPE`, where `TYPE` is `Normal` or `String`.
+## Dynamic Inputs
+Add inputs in the Inputs panel as `NAME:TYPE`:
+- `TYPE` is `Normal` (double) or `String`
 
-In text, use tokens:
+Text tokens:
 - `%NAME%` inserts the value
 - `%NAME%R1` rounds to 1 decimal (Normal only)
 
-Dynamic text is updated every 100ms in a `if(clk()) { interval(100) }` block.
+Dynamic text is updated every 100ms via a `if(clk()) { interval(100) }` block.
 
 ## Export Notes
-- Uses `EGP:` wirelink (e.g. `EGP:egpBox(...)`).
+- Uses the `EGP:` wirelink style (e.g., `EGP:egpBox(...)`).
 - Dynamic text uses `EGP:egpSetText(...)`.
-- Text alignment is exported with `EGP:egpAlign(id, horiz, vert)`; vert defaults to middle.
+- Text alignment uses `EGP:egpAlign(id, horiz, vert)` (vertical defaults to middle).
 - Output scales to the current screen size using the project resolution as the reference.
 
 ## UI Notes
-- Default font size is 18 in-game, displayed at half size in the editor (9) to account for strange font behaviours here.
+- Default in-game font size is 18; it's displayed at half size in the editor (9) for better parity.

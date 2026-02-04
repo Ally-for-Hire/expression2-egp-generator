@@ -21,6 +21,9 @@ class Shape:
     align: str = "left"
 
     def to_dict(self) -> Dict:
+        """Description: To dict
+        Inputs: None
+        """
         return {
             "id": self.id,
             "kind": self.kind,
@@ -36,6 +39,9 @@ class Shape:
 
     @classmethod
     def from_dict(cls, payload: Dict) -> "Shape":
+        """Description: From dict
+        Inputs: cls, payload: Dict
+        """
         return cls(
             id=payload["id"],
             kind=payload["kind"],
@@ -60,6 +66,9 @@ class Layer:
     shapes: List[Shape] = field(default_factory=list)
 
     def to_dict(self) -> Dict:
+        """Description: To dict
+        Inputs: None
+        """
         return {
             "id": self.id,
             "name": self.name,
@@ -71,6 +80,9 @@ class Layer:
 
     @classmethod
     def from_dict(cls, payload: Dict) -> "Layer":
+        """Description: From dict
+        Inputs: cls, payload: Dict
+        """
         return cls(
             id=payload["id"],
             name=payload.get("name", "Layer"),
@@ -87,10 +99,16 @@ class InputDef:
     type: str
 
     def to_dict(self) -> Dict:
+        """Description: To dict
+        Inputs: None
+        """
         return {"name": self.name, "type": self.type}
 
     @classmethod
     def from_dict(cls, payload: Dict) -> "InputDef":
+        """Description: From dict
+        Inputs: cls, payload: Dict
+        """
         return cls(name=payload.get("name", ""), type=payload.get("type", "Normal"))
 
 
@@ -103,10 +121,16 @@ class Project:
 
     @classmethod
     def new(cls, resolution: Tuple[int, int]) -> "Project":
+        """Description: New
+        Inputs: cls, resolution: Tuple[int, int]
+        """
         layer = Layer(id=str(uuid.uuid4()), name="Layer 1")
         return cls(resolution=resolution, layers=[layer], active_layer_id=layer.id, inputs=[])
 
     def to_dict(self) -> Dict:
+        """Description: To dict
+        Inputs: None
+        """
         return {
             "resolution": list(self.resolution),
             "active_layer_id": self.active_layer_id,
@@ -116,6 +140,9 @@ class Project:
 
     @classmethod
     def from_dict(cls, payload: Dict) -> "Project":
+        """Description: From dict
+        Inputs: cls, payload: Dict
+        """
         resolution = tuple(payload.get("resolution", (1920, 1080)))
         layers = [Layer.from_dict(item) for item in payload.get("layers", [])]
         active_layer_id = payload.get("active_layer_id")
@@ -128,10 +155,16 @@ class Project:
         return cls(resolution=resolution, layers=layers, active_layer_id=active_layer_id, inputs=inputs)
 
     def get_layer(self, layer_id: str) -> Optional[Layer]:
+        """Description: Get layer
+        Inputs: layer_id: str
+        """
         for layer in self.layers:
             if layer.id == layer_id:
                 return layer
         return None
 
     def new_shape_id(self) -> str:
+        """Description: New shape id
+        Inputs: None
+        """
         return str(uuid.uuid4())

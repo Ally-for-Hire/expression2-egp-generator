@@ -2,5 +2,6 @@ AGENTS.md
 __pycache__
 build
 dist
+scripts
 *.spec
 *.bak
