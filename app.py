@@ -29,6 +29,10 @@ class EgpApp:
         self._suppress_property_update = False
         self._center_x_var = tk.StringVar()
         self._center_y_var = tk.StringVar()
+        self._bounds_x_var = tk.StringVar()
+        self._bounds_y_var = tk.StringVar()
+        self._bounds_w_var = tk.StringVar()
+        self._bounds_h_var = tk.StringVar()
         self._history: list[dict] = []
         self._restoring = False
 
@@ -302,6 +306,21 @@ class EgpApp:
             pady=4,
         )
 
+        self.bounds_label = tk.Label(self.properties_frame, text="Selection Bounds (X,Y,W,H)", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
+        self.bounds_x_entry = tk.Entry(self.properties_frame, textvariable=self._bounds_x_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
+        self.bounds_y_entry = tk.Entry(self.properties_frame, textvariable=self._bounds_y_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
+        self.bounds_w_entry = tk.Entry(self.properties_frame, textvariable=self._bounds_w_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
+        self.bounds_h_entry = tk.Entry(self.properties_frame, textvariable=self._bounds_h_var, bg=config.THEME["panel_alt"], fg=config.THEME["text"], insertbackground=config.THEME["text"], relief=tk.FLAT)
+        self.set_bounds_btn = tk.Button(
+            self.properties_frame,
+            text="Set Bounds/Size",
+            command=self._apply_selection_bounds,
+            bg=config.THEME["panel_alt"],
+            fg=config.THEME["text"],
+            relief=tk.FLAT,
+            pady=4,
+        )
+
         self.palette_label = tk.Label(self.properties_frame, text="Palette", bg=config.THEME["panel"], fg=config.THEME["muted"], font=("Segoe UI", 10))
         self.palette_frame = tk.Frame(self.properties_frame, bg=config.THEME["panel"])
         for color in config.COLORS:
@@ -337,6 +356,7 @@ class EgpApp:
             ("font_size", self._grid_font_size_row),
             ("align", self._grid_align_row),
             ("selection_center", self._grid_selection_center_row),
+            ("selection_bounds", self._grid_selection_bounds_row),
             ("palette", self._grid_palette_row),
             ("apply", self._grid_apply_row),
         ]
@@ -472,6 +492,21 @@ class EgpApp:
         self.set_center_btn.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(4, 4))
         return row + 1
 
+    def _grid_selection_bounds_row(self, row: int) -> int:
+        """Description: Grid selection bounds row
+        Inputs: row: int
+        """
+        self.bounds_label.grid(row=row, column=0, columnspan=2, sticky="w", pady=(8, 2))
+        row += 1
+        self.bounds_x_entry.grid(row=row, column=0, sticky="ew", pady=2, padx=(0, 4))
+        self.bounds_y_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        row += 1
+        self.bounds_w_entry.grid(row=row, column=0, sticky="ew", pady=2, padx=(0, 4))
+        self.bounds_h_entry.grid(row=row, column=1, sticky="ew", pady=2)
+        row += 1
+        self.set_bounds_btn.grid(row=row, column=0, columnspan=2, sticky="ew", pady=(4, 4))
+        return row + 1
+
     def _grid_palette_row(self, row: int) -> int:
         """Description: Grid palette row
         Inputs: row: int
@@ -508,7 +543,7 @@ class EgpApp:
         if any_text:
             visible.update({"text", "font", "font_size", "align"})
         if has_selection:
-            visible.update({"selection_center", "apply"})
+            visible.update({"selection_center", "selection_bounds", "apply"})
         return visible
     def _build_layers_panel(self) -> None:
         """Description: Build layers panel
@@ -827,6 +862,10 @@ class EgpApp:
             self.editing_label.config(text="Editing: Tool Defaults")
             self._center_x_var.set("")
             self._center_y_var.set("")
+            self._bounds_x_var.set("")
+            self._bounds_y_var.set("")
+            self._bounds_w_var.set("")
+            self._bounds_h_var.set("")
             self._suppress_property_update = False
             self._apply_property_layout(self._property_visibility(shapes))
             return
@@ -844,6 +883,14 @@ class EgpApp:
         if center:
             self._center_x_var.set(f"{center[0]:.1f}")
             self._center_y_var.set(f"{center[1]:.1f}")
+
+        bounds = self._selected_bounds(shapes)
+        if bounds:
+            x, y, w, h = bounds
+            self._bounds_x_var.set(f"{x:.1f}")
+            self._bounds_y_var.set(f"{y:.1f}")
+            self._bounds_w_var.set(f"{w:.1f}")
+            self._bounds_h_var.set(f"{h:.1f}")
         self._suppress_property_update = False
         self._apply_property_layout(self._property_visibility(shapes))
 
@@ -864,6 +911,61 @@ class EgpApp:
         except ValueError:
             return
         self.canvas_view.move_selected_to_center_offset((x, y))
+        self._mark_dirty()
+
+    def _selected_bounds(self, shapes: list[Shape]) -> tuple[float, float, float, float] | None:
+        """Description: Selected bounds
+        Inputs: shapes: list[Shape]
+        """
+        if not shapes:
+            return None
+        xs: list[float] = []
+        ys: list[float] = []
+        for shape in shapes:
+            for point in shape.points:
+                xs.append(point[0])
+                ys.append(point[1])
+        if not xs or not ys:
+            return None
+        min_x = min(xs)
+        max_x = max(xs)
+        min_y = min(ys)
+        max_y = max(ys)
+        return (min_x, min_y, max_x - min_x, max_y - min_y)
+
+    def _apply_selection_bounds(self) -> None:
+        """Description: Apply selection bounds
+        Inputs: None
+        """
+        selected = self._selected_shapes()
+        if not selected:
+            return
+        current = self._selected_bounds(selected)
+        if not current:
+            return
+
+        try:
+            new_x = float(self._bounds_x_var.get())
+            new_y = float(self._bounds_y_var.get())
+            new_w = max(0.0, float(self._bounds_w_var.get()))
+            new_h = max(0.0, float(self._bounds_h_var.get()))
+        except ValueError:
+            return
+
+        old_x, old_y, old_w, old_h = current
+        sx = 1.0 if old_w <= 1e-9 else (new_w / old_w)
+        sy = 1.0 if old_h <= 1e-9 else (new_h / old_h)
+
+        for shape in selected:
+            new_points: list[tuple[float, float]] = []
+            for px, py in shape.points:
+                nx = new_x + (px - old_x) * sx
+                ny = new_y + (py - old_y) * sy
+                new_points.append((nx, ny))
+            shape.points = new_points
+
+        self.canvas_view.draw()
+        self._on_selection_changed(selected)
         self._mark_dirty()
 
     def _refresh_layers(self) -> None:
