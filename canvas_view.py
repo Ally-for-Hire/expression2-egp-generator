@@ -155,7 +155,7 @@ class CanvasView:
             if key_set is None or "stroke" in key_set:
                 shape.stroke = str(self.settings["stroke"])
             if key_set is None or "stroke_width" in key_set:
-                if shape.kind in ("circle", "circle_filled"):
+                if shape.kind in ("rect", "box", "circle", "circle_filled"):
                     shape.stroke_width = 1
                 else:
                     shape.stroke_width = int(self.settings["stroke_width"])
@@ -334,6 +334,7 @@ class CanvasView:
             return []
         item_ids: List[int] = []
         stroke_width = max(1, int(shape.stroke_width))
+        display_stroke_width = 1 if shape.kind in ("rect", "box", "circle", "circle_filled") else stroke_width
         layer_color = self._layer_color_for_shape(shape)
         stroke = layer_color or shape.stroke
         fill = shape.fill
@@ -364,7 +365,7 @@ class CanvasView:
                 self.canvas.create_rectangle(
                     p1[0], p1[1], p2[0], p2[1],
                     outline=outline,
-                    width=stroke_width,
+                    width=display_stroke_width,
                     fill=fill_color,
                     tags="shape",
                 )
@@ -812,9 +813,9 @@ class CanvasView:
         if self.tool == "line":
             return Shape(id=shape_id, kind="line", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha)
         if self.tool == "rect":
-            return Shape(id=shape_id, kind="rect", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha)
+            return Shape(id=shape_id, kind="rect", points=[start, end], stroke=stroke, stroke_width=1, alpha=alpha)
         if self.tool == "box":
-            return Shape(id=shape_id, kind="box", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha, fill=fill)
+            return Shape(id=shape_id, kind="box", points=[start, end], stroke=stroke, stroke_width=1, alpha=alpha, fill=fill)
         if self.tool == "circle":
             return Shape(id=shape_id, kind="circle", points=[start, end], stroke=stroke, stroke_width=1, alpha=alpha)
         if self.tool == "circle_filled":
