@@ -75,25 +75,35 @@ class HudExporter:
         with open(self.path, "a", encoding="utf-8") as file:
             file.writelines(lines)
 
+    def _fmt_num(self, value: float) -> str:
+        """Description: Format numeric output with 1 decimal place
+        Inputs: value: float
+        """
+        rounded = round(float(value), 1)
+        if abs(rounded) < 0.05:
+            rounded = 0.0
+        return f"{rounded:.1f}"
+
     def _offset_expr(self, resolution: Tuple[int, int], point: Tuple[float, float]) -> str:
         """Description: Offset expr
         Inputs: resolution: Tuple[int, int], point: Tuple[float, float]
         """
         dx = point[0] - resolution[0] / 2
         dy = point[1] - resolution[1] / 2
-        return f"Res+vec2( {dx}*Scale:x(), {dy}*Scale:y())"
+        return f"Res+vec2( {self._fmt_num(dx)}*Scale:x(), {self._fmt_num(dy)}*Scale:y())"
 
     def _size_expr(self, value: float) -> str:
         """Description: Size expr
         Inputs: value: float
         """
-        return f"vec2( {value}*Scale:x(), {value}*Scale:x())"
+        v = self._fmt_num(value)
+        return f"vec2( {v}*Scale:x(), {v}*Scale:x())"
 
     def _size_xy_expr(self, width: float, height: float) -> str:
         """Description: Size xy expr
         Inputs: width: float, height: float
         """
-        return f"vec2( {width}*Scale:x(), {height}*Scale:y())"
+        return f"vec2( {self._fmt_num(width)}*Scale:x(), {self._fmt_num(height)}*Scale:y())"
 
     def _color_vec(self, color: str) -> Tuple[int, int, int]:
         """Description: Color vec
