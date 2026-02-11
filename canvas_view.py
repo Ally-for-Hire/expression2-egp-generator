@@ -117,6 +117,15 @@ class CanvasView:
         Inputs: layer_id: str
         """
         self.active_layer_id = layer_id
+        # Keep interaction scoped to the active layer.
+        active = self.project.get_layer(layer_id)
+        if not active:
+            self.set_selected_shapes(set())
+            return
+        active_ids = {shape.id for shape in active.shapes}
+        filtered = {sid for sid in self._selected_shape_ids if sid in active_ids}
+        if filtered != self._selected_shape_ids:
+            self.set_selected_shapes(filtered)
 
     def set_grid(self, minor: int, major: int) -> None:
         """Description: Set grid
@@ -644,10 +653,17 @@ class CanvasView:
         if not hit:
             self.set_selected_shapes(set())
             return False
+
+        active_layer = self.project.get_layer(self.active_layer_id)
+        active_ids = {shape.id for shape in active_layer.shapes} if active_layer else set()
+
         shape_id = None
         for item_id in hit:
-            if item_id in self._item_to_shape:
-                shape_id = self._item_to_shape[item_id]
+            if item_id not in self._item_to_shape:
+                continue
+            sid = self._item_to_shape[item_id]
+            if sid in active_ids:
+                shape_id = sid
                 break
         if shape_id:
             if event.state & 0x0001:
@@ -971,9 +987,8 @@ class CanvasView:
         min_y = min(world_start[1], world_end[1])
         max_y = max(world_start[1], world_end[1])
         selected: Set[str] = set()
-        for layer in self.project.layers:
-            if not layer.visible:
-                continue
+        layer = self.project.get_layer(self.active_layer_id)
+        if layer and layer.visible:
             for shape in layer.shapes:
                 bounds = self._shape_bounds(shape)
                 if not bounds:
@@ -1155,10 +1170,11 @@ class CanvasView:
         world = self.screen_to_world((event.x, event.y))
         threshold = 12 / max(self.zoom, 0.001)
         selected = self._selected_shape_ids
-        for layer in self.project.layers:
-            if not layer.visible:
-                continue
-            for shape in layer.shapes:
+        active_layer = self.project.get_layer(self.active_layer_id)
+        if not active_layer or not active_layer.visible:
+            return None
+
+        for shape in active_layer.shapes:
                 if selected and shape.id not in selected:
                     continue
                 points = shape.points
