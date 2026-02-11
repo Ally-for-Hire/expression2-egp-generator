@@ -115,9 +115,9 @@ class HudExporter:
         elif shape.kind == "box":
             self._export_box(egp_id, resolution, layer_color, shape)
         elif shape.kind == "circle":
-            self._export_circle(egp_id, resolution, layer_color, shape)
+            self._export_circle(egp_id, resolution, layer_color, shape, filled=False)
         elif shape.kind == "circle_filled":
-            self._export_circle(egp_id, resolution, layer_color, shape)
+            self._export_circle(egp_id, resolution, layer_color, shape, filled=True)
         elif shape.kind == "poly":
             self._export_poly(egp_id, resolution, layer_color, shape)
         elif shape.kind == "text":
@@ -185,9 +185,9 @@ class HudExporter:
         ]
         self._write_lines(lines)
 
-    def _export_circle(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape) -> None:
+    def _export_circle(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, filled: bool = False) -> None:
         """Description: Export circle
-        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape
+        Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, filled: bool = False
         """
         if len(shape.points) < 2:
             return
@@ -195,8 +195,9 @@ class HudExporter:
         center = self._offset_expr(resolution, (cx, cy))
         color = layer_color or shape.fill or shape.stroke
         rgb = self._color_vec(color)
+        circle_call = "egpCircle" if filled else "egpCircleOutline"
         lines = [
-            f"    EGP:egpCircle( {egp_id}, {center}, {self._size_xy_expr(w, h)} )\n",
+            f"    EGP:{circle_call}( {egp_id}, {center}, {self._size_xy_expr(w/2, h/2)} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
         ]
         self._write_lines(lines)

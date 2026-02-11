@@ -434,6 +434,23 @@ class CanvasView:
         """
         self.canvas.focus_set()
         if self.tool == "select":
+            # For lines, vertex drag should win over box-scale handles so endpoints
+            # resize from one side instead of scaling both ends around center.
+            selected_line_only = False
+            if len(self._selected_shape_ids) == 1:
+                sid = next(iter(self._selected_shape_ids))
+                s = self._find_shape(sid)
+                selected_line_only = bool(s and s.kind == "line")
+
+            if selected_line_only:
+                vertex = self._find_vertex_at(event)
+                if vertex:
+                    self._drag_vertex = vertex
+                    shape = self._find_shape(vertex[0])
+                    if shape and len(shape.points) > vertex[1]:
+                        self._drag_vertex_start = shape.points[vertex[1]]
+                    return
+
             handle = self._find_scale_handle_at(event)
             if handle:
                 self._begin_scale_drag(handle, event)
@@ -1357,7 +1374,36 @@ class CanvasView:
             return False
         world = self.screen_to_world((event.x, event.y))
         (x1, y1), (x2, y2) = bounds
-        return x1 <= world[0] <= x2 and y1 <= world[1] <= y2
+
+        tol = 6 / max(self.zoom, 0.001)
+        # Works for thin selections (e.g., horizontal/vertical lines) too.
+        if (x1 - tol) <= world[0] <= (x2 + tol) and (y1 - tol) <= world[1] <= (y2 + tol):
+            return True
+
+        # For a single selected line, allow drag when cursor is near the segment.
+        if len(self._selected_shape_ids) == 1:
+            sid = next(iter(self._selected_shape_ids))
+            shape = self._find_shape(sid)
+            if shape and shape.kind == "line" and len(shape.points) >= 2:
+                (ax, ay), (bx, by) = shape.points[0], shape.points[1]
+                vx = bx - ax
+                vy = by - ay
+                wx = world[0] - ax
+                wy = world[1] - ay
+                seg_len2 = vx * vx + vy * vy
+                if seg_len2 <= 1e-9:
+                    dist2 = wx * wx + wy * wy
+                else:
+                    t = max(0.0, min(1.0, (wx * vx + wy * vy) / seg_len2))
+                    px = ax + t * vx
+                    py = ay + t * vy
+                    dx = world[0] - px
+                    dy = world[1] - py
+                    dist2 = dx * dx + dy * dy
+                if dist2 <= tol * tol:
+                    return True
+
+        return False
 
     def _begin_move_drag(self, event: tk.Event) -> None:
         """Description: Begin move drag
