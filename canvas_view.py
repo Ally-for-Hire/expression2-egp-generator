@@ -145,7 +145,10 @@ class CanvasView:
             if key_set is None or "stroke" in key_set:
                 shape.stroke = str(self.settings["stroke"])
             if key_set is None or "stroke_width" in key_set:
-                shape.stroke_width = int(self.settings["stroke_width"])
+                if shape.kind in ("circle", "circle_filled"):
+                    shape.stroke_width = 1
+                else:
+                    shape.stroke_width = int(self.settings["stroke_width"])
             if key_set is None or "fill" in key_set:
                 shape.fill = str(self.settings["fill"]) if self.settings.get("fill") else None
             if key_set is None or "text" in key_set:
@@ -363,11 +366,12 @@ class CanvasView:
             else:
                 outline = stroke
                 fill_color = ""
+            # Editor rule: circles are always displayed with thickness 1.
             item_ids.append(
                 self.canvas.create_oval(
                     p1[0], p1[1], p2[0], p2[1],
                     outline=outline,
-                    width=stroke_width,
+                    width=1,
                     fill=fill_color,
                     tags="shape",
                 )
@@ -775,9 +779,9 @@ class CanvasView:
         if self.tool == "box":
             return Shape(id=shape_id, kind="box", points=[start, end], stroke=stroke, stroke_width=stroke_width, fill=fill)
         if self.tool == "circle":
-            return Shape(id=shape_id, kind="circle", points=[start, end], stroke=stroke, stroke_width=stroke_width)
+            return Shape(id=shape_id, kind="circle", points=[start, end], stroke=stroke, stroke_width=1)
         if self.tool == "circle_filled":
-            return Shape(id=shape_id, kind="circle_filled", points=[start, end], stroke=stroke, stroke_width=stroke_width, fill=fill)
+            return Shape(id=shape_id, kind="circle_filled", points=[start, end], stroke=stroke, stroke_width=1, fill=fill)
         return None
 
     def _create_text_shape(self, point: Point) -> None:
