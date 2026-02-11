@@ -1115,11 +1115,16 @@ class CanvasView:
         snap_y = center_y + round((world[1] - center_y) / step) * step
         snapped = (snap_x, snap_y)
 
-        # Keep circle Ctrl-resize predictable: grid snap only, no text-guide magnetism.
-        if self.tool in ("circle", "circle_filled"):
+        # Keep Ctrl snapping grid-true for drawing/manipulation tools.
+        # Text-guide magnetism can introduce ~0.5 offsets from font bounds.
+        if self.tool in ("line", "rect", "box", "circle", "circle_filled", "poly", "text"):
             return snapped
 
-        return self._snap_to_text_edges(snapped)
+        # For selection transforms, allow text guides, then re-quantize to grid.
+        guided = self._snap_to_text_edges(snapped)
+        gx = center_x + round((guided[0] - center_x) / step) * step
+        gy = center_y + round((guided[1] - center_y) / step) * step
+        return (gx, gy)
 
     def _snap_to_text_edges(self, world: Point) -> Point:
         """Description: Snap to text edges
