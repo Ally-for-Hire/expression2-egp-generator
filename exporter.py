@@ -76,13 +76,13 @@ class HudExporter:
             file.writelines(lines)
 
     def _fmt_num(self, value: float) -> str:
-        """Description: Format numeric output with 1 decimal place
+        """Description: Format numeric output with 2 decimal places
         Inputs: value: float
         """
-        rounded = round(float(value), 1)
-        if abs(rounded) < 0.05:
+        rounded = round(float(value), 2)
+        if abs(rounded) < 0.005:
             rounded = 0.0
-        return f"{rounded:.1f}"
+        return f"{rounded:.2f}"
 
     def _offset_expr(self, resolution: Tuple[int, int], point: Tuple[float, float]) -> str:
         """Description: Offset expr
