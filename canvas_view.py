@@ -1099,16 +1099,21 @@ class CanvasView:
                 if not bounds:
                     continue
                 (x1, y1), (x2, y2) = bounds
-                for edge_x in (x1, x2):
-                    dx = abs(world[0] - edge_x)
+
+                # Snap to perceived text guides: left/right + visual center.
+                center_x = (x1 + x2) / 2
+                center_y = (y1 + y2) / 2
+
+                for guide_x in (x1, center_x, x2):
+                    dx = abs(world[0] - guide_x)
                     if dx <= best_dx:
                         best_dx = dx
-                        target_x = edge_x
-                for edge_y in (y1, y2):
-                    dy = abs(world[1] - edge_y)
+                        target_x = guide_x
+                for guide_y in (y1, center_y, y2):
+                    dy = abs(world[1] - guide_y)
                     if dy <= best_dy:
                         best_dy = dy
-                        target_y = edge_y
+                        target_y = guide_y
         return (target_x, target_y)
 
     def _shift_down(self, event: tk.Event) -> bool:
