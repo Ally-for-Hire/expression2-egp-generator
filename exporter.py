@@ -274,7 +274,9 @@ class HudExporter:
         parts: list[str] = []
         last = 0
         is_dynamic = False
-        for match in token_re.finditer(shape.text):
+        matches = list(token_re.finditer(shape.text))
+
+        for match in matches:
             name = match.group(1)
             rounding = match.group(3)
             if name not in inputs:
@@ -287,11 +289,24 @@ class HudExporter:
                 value_expr = f"round({name},{rounding})"
             parts.append(value_expr)
             last = match.end()
+
         if not is_dynamic:
             return self._quote_text(shape.text), False
+
         if last < len(shape.text):
             parts.append(self._quote_text(shape.text[last:]))
+
         expr = " + ".join(parts) if parts else self._quote_text(shape.text)
+
+        # E2 egpText expects a string; when the text is only a single numeric token
+        # (e.g. "%Speed%" or "%Speed%R0"), force string coercion.
+        if len(matches) == 1:
+            m = matches[0]
+            name = m.group(1)
+            covers_full_text = (m.start() == 0 and m.end() == len(shape.text))
+            if covers_full_text and name in inputs and inputs[name].lower() == "normal":
+                expr = f"({expr}) + \"\""
+
         return expr, True
 
     def _build_dynamic_block(self, dynamic_text: Dict[int, str]) -> list[str]:
