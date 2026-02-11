@@ -408,7 +408,8 @@ class CanvasView:
             p = self.world_to_screen(shape.points[0])
             size = max(1, int(shape.font_size * 0.5 * self.zoom))
             anchor = "w" if shape.align == "left" else "center" if shape.align == "center" else "e"
-            font = (shape.font or config.DEFAULT_FONT, size)
+            # EGP text renders bold in-game; mirror that weight in editor preview.
+            font = (shape.font or config.DEFAULT_FONT, size, "bold")
             item_ids.append(
                 self.canvas.create_text(
                     p[0], p[1],
@@ -722,7 +723,7 @@ class CanvasView:
             x, y = shape.points[0]
             display_size = max(1, int(shape.font_size * 0.5 * self.zoom))
             try:
-                font = tkfont.Font(family=shape.font or config.DEFAULT_FONT, size=display_size)
+                font = tkfont.Font(family=shape.font or config.DEFAULT_FONT, size=display_size, weight="bold")
                 text_width = max(font.measure(shape.text or " "), 1)
                 text_height = max(font.metrics("linespace"), 1)
             except Exception:
