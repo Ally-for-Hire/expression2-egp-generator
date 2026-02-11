@@ -1082,6 +1082,11 @@ class CanvasView:
         snap_x = center_x + round((world[0] - center_x) / step) * step
         snap_y = center_y + round((world[1] - center_y) / step) * step
         snapped = (snap_x, snap_y)
+
+        # Keep circle Ctrl-resize predictable: grid snap only, no text-guide magnetism.
+        if self.tool in ("circle", "circle_filled"):
+            return snapped
+
         return self._snap_to_text_edges(snapped)
 
     def _snap_to_text_edges(self, world: Point) -> Point:
