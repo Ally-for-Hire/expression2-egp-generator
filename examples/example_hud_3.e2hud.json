@@ -1,5 +1,8 @@
 {
-  "resolution": [1920, 1080],
+  "resolution": [
+    1920,
+    1080
+  ],
   "active_layer_id": "tfau-layer-1",
   "layers": [
     {
@@ -9,46 +12,501 @@
       "locked": false,
       "color": null,
       "shapes": [
-        {"id":"ret-v","kind":"line","points":[[960.0,532.0],[960.0,548.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":255,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"ret-h","kind":"line","points":[[952.0,540.0],[968.0,540.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":255,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-
-        {"id":"c-tl-h","kind":"line","points":[[902.0,500.0],[926.0,500.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-tl-v","kind":"line","points":[[902.0,500.0],[902.0,524.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-tr-h","kind":"line","points":[[994.0,500.0],[1018.0,500.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-tr-v","kind":"line","points":[[1018.0,500.0],[1018.0,524.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-bl-h","kind":"line","points":[[902.0,580.0],[926.0,580.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-bl-v","kind":"line","points":[[902.0,556.0],[902.0,580.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-br-h","kind":"line","points":[[994.0,580.0],[1018.0,580.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-        {"id":"c-br-v","kind":"line","points":[[1018.0,556.0],[1018.0,580.0]],"stroke":"#7FDBFF","stroke_width":2,"alpha":200,"fill":null,"text":"","font":"","font_size":12,"align":"left"},
-
-        {"id":"val-fuel","kind":"text","points":[[960.0,430.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Fuel%%","font":"Calibri","font_size":16,"align":"center"},
-        {"id":"lbl-fuel","kind":"text","points":[[960.0,438.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"FUEL","font":"Calibri","font_size":12,"align":"center"},
-
-        {"id":"val-a1","kind":"text","points":[[772.0,528.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Ammo1%","font":"Calibri","font_size":16,"align":"left"},
-        {"id":"lbl-a1","kind":"text","points":[[772.0,536.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"A1","font":"Calibri","font_size":12,"align":"left"},
-
-        {"id":"val-a2","kind":"text","points":[[772.0,552.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Ammo2%","font":"Calibri","font_size":16,"align":"left"},
-        {"id":"lbl-a2","kind":"text","points":[[772.0,560.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"A2","font":"Calibri","font_size":12,"align":"left"},
-
-        {"id":"val-am1r","kind":"text","points":[[1148.0,528.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Ammo1%","font":"Calibri","font_size":16,"align":"right"},
-        {"id":"lbl-am1r","kind":"text","points":[[1148.0,536.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"A1","font":"Calibri","font_size":12,"align":"right"},
-
-        {"id":"val-am2r","kind":"text","points":[[1148.0,552.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Ammo2%","font":"Calibri","font_size":16,"align":"right"},
-        {"id":"lbl-am2r","kind":"text","points":[[1148.0,560.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"A2","font":"Calibri","font_size":12,"align":"right"},
-
-        {"id":"val-spd","kind":"text","points":[[772.0,632.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Speed% KMH","font":"Calibri","font_size":16,"align":"left"},
-        {"id":"lbl-spd","kind":"text","points":[[772.0,640.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"SPD","font":"Calibri","font_size":12,"align":"left"},
-
-        {"id":"val-gear","kind":"text","points":[[1148.0,632.0]],"stroke":"#7FDBFF","stroke_width":1,"alpha":255,"fill":null,"text":"%Gear%","font":"Calibri","font_size":16,"align":"right"},
-        {"id":"lbl-gear","kind":"text","points":[[1148.0,640.0]],"stroke":"#000000","stroke_width":1,"alpha":255,"fill":null,"text":"GEAR","font":"Calibri","font_size":12,"align":"right"}
+        {
+          "id": "ret-v",
+          "kind": "line",
+          "points": [
+            [
+              960.0,
+              532.0
+            ],
+            [
+              960.0,
+              548.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "ret-h",
+          "kind": "line",
+          "points": [
+            [
+              952.0,
+              540.0
+            ],
+            [
+              968.0,
+              540.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-tl-h",
+          "kind": "line",
+          "points": [
+            [
+              902.0,
+              500.0
+            ],
+            [
+              926.0,
+              500.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-tl-v",
+          "kind": "line",
+          "points": [
+            [
+              902.0,
+              500.0
+            ],
+            [
+              902.0,
+              524.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-tr-h",
+          "kind": "line",
+          "points": [
+            [
+              994.0,
+              500.0
+            ],
+            [
+              1018.0,
+              500.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-tr-v",
+          "kind": "line",
+          "points": [
+            [
+              1018.0,
+              500.0
+            ],
+            [
+              1018.0,
+              524.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-bl-h",
+          "kind": "line",
+          "points": [
+            [
+              902.0,
+              580.0
+            ],
+            [
+              926.0,
+              580.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-bl-v",
+          "kind": "line",
+          "points": [
+            [
+              902.0,
+              556.0
+            ],
+            [
+              902.0,
+              580.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-br-h",
+          "kind": "line",
+          "points": [
+            [
+              994.0,
+              580.0
+            ],
+            [
+              1018.0,
+              580.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "c-br-v",
+          "kind": "line",
+          "points": [
+            [
+              1018.0,
+              556.0
+            ],
+            [
+              1018.0,
+              580.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 2,
+          "alpha": 200,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "val-fuel",
+          "kind": "text",
+          "points": [
+            [
+              960.0,
+              430.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Fuel%%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-fuel",
+          "kind": "text",
+          "points": [
+            [
+              960.0,
+              438.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "FUEL",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-a1",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              528.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Ammo1%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-a1",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              536.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "A1",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-a2",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              552.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Ammo2%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-a2",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              560.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "A2",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-am1r",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              528.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Ammo1%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-am1r",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              536.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "A1",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-am2r",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              552.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Ammo2%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-am2r",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              560.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "A2",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-spd",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              632.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Speed% KMH",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-spd",
+          "kind": "text",
+          "points": [
+            [
+              772.0,
+              640.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "SPD",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        },
+        {
+          "id": "val-gear",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              632.0
+            ]
+          ],
+          "stroke": "#7FDBFF",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "%Gear%",
+          "font": "Calibri",
+          "font_size": 16,
+          "align": "center"
+        },
+        {
+          "id": "lbl-gear",
+          "kind": "text",
+          "points": [
+            [
+              1148.0,
+              640.0
+            ]
+          ],
+          "stroke": "#000000",
+          "stroke_width": 1,
+          "alpha": 255,
+          "fill": null,
+          "text": "GEAR",
+          "font": "Calibri",
+          "font_size": 12,
+          "align": "center"
+        }
       ]
     }
   ],
   "inputs": [
-    {"name":"Ammo1","type":"Normal"},
-    {"name":"Ammo2","type":"Normal"},
-    {"name":"Speed","type":"Normal"},
-    {"name":"Gear","type":"Normal"},
-    {"name":"Fuel","type":"Normal"}
+    {
+      "name": "Ammo1",
+      "type": "Normal"
+    },
+    {
+      "name": "Ammo2",
+      "type": "Normal"
+    },
+    {
+      "name": "Speed",
+      "type": "Normal"
+    },
+    {
+      "name": "Gear",
+      "type": "Normal"
+    },
+    {
+      "name": "Fuel",
+      "type": "Normal"
+    }
   ]
 }
