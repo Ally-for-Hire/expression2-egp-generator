@@ -812,7 +812,10 @@ class EgpApp:
         """Description: Apply properties to selection
         Inputs: None
         """
-        self.canvas_view.apply_settings_to_selected()
+        # Safety: bulk apply should NOT overwrite text content.
+        # Text can still be edited explicitly on selected text objects via the text field.
+        bulk_keys = ["stroke", "stroke_width", "fill", "font", "font_size", "align"]
+        self.canvas_view.apply_settings_to_selected(bulk_keys)
         self._mark_dirty()
 
     def _on_selection_changed(self, shapes: list[Shape]) -> None:
