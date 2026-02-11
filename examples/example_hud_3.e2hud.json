@@ -238,7 +238,7 @@
           "points": [
             [
               960.0,
-              430.0
+              632.0
             ]
           ],
           "stroke": "#7FDBFF",
@@ -247,7 +247,7 @@
           "fill": null,
           "text": "%Fuel%%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -256,7 +256,7 @@
           "points": [
             [
               960.0,
-              438.0
+              640.0
             ]
           ],
           "stroke": "#000000",
@@ -265,7 +265,7 @@
           "fill": null,
           "text": "FUEL",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -283,7 +283,7 @@
           "fill": null,
           "text": "%Ammo1%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -301,7 +301,7 @@
           "fill": null,
           "text": "A1",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -319,7 +319,7 @@
           "fill": null,
           "text": "%Ammo2%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -337,7 +337,7 @@
           "fill": null,
           "text": "A2",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -355,7 +355,7 @@
           "fill": null,
           "text": "%Ammo1%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -373,7 +373,7 @@
           "fill": null,
           "text": "A1",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -391,7 +391,7 @@
           "fill": null,
           "text": "%Ammo2%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -409,7 +409,7 @@
           "fill": null,
           "text": "A2",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -427,7 +427,7 @@
           "fill": null,
           "text": "%Speed% KMH",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -445,7 +445,7 @@
           "fill": null,
           "text": "SPD",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         },
         {
@@ -463,7 +463,7 @@
           "fill": null,
           "text": "%Gear%",
           "font": "Calibri",
-          "font_size": 16,
+          "font_size": 18,
           "align": "center"
         },
         {
@@ -481,7 +481,7 @@
           "fill": null,
           "text": "GEAR",
           "font": "Calibri",
-          "font_size": 12,
+          "font_size": 14,
           "align": "center"
         }
       ]
