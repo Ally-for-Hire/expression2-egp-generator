@@ -448,15 +448,31 @@ class CanvasView:
         """
         self.canvas.focus_set()
         if self.tool == "select":
-            # For lines, vertex drag should win over box-scale handles so endpoints
-            # resize from one side instead of scaling both ends around center.
-            selected_line_only = False
-            if len(self._selected_shape_ids) == 1:
-                sid = next(iter(self._selected_shape_ids))
-                s = self._find_shape(sid)
-                selected_line_only = bool(s and s.kind == "line")
+            # Handle/vertex/move interactions only when we already have a selection.
+            # This avoids accidental "nearest shape" grabs on first click.
+            if self._selected_shape_ids:
+                # For lines, vertex drag should win over box-scale handles so endpoints
+                # resize from one side instead of scaling both ends around center.
+                selected_line_only = False
+                if len(self._selected_shape_ids) == 1:
+                    sid = next(iter(self._selected_shape_ids))
+                    s = self._find_shape(sid)
+                    selected_line_only = bool(s and s.kind == "line")
 
-            if selected_line_only:
+                if selected_line_only:
+                    vertex = self._find_vertex_at(event)
+                    if vertex:
+                        self._drag_vertex = vertex
+                        shape = self._find_shape(vertex[0])
+                        if shape and len(shape.points) > vertex[1]:
+                            self._drag_vertex_start = shape.points[vertex[1]]
+                        return
+
+                handle = self._find_scale_handle_at(event)
+                if handle:
+                    self._begin_scale_drag(handle, event)
+                    return
+
                 vertex = self._find_vertex_at(event)
                 if vertex:
                     self._drag_vertex = vertex
@@ -465,20 +481,10 @@ class CanvasView:
                         self._drag_vertex_start = shape.points[vertex[1]]
                     return
 
-            handle = self._find_scale_handle_at(event)
-            if handle:
-                self._begin_scale_drag(handle, event)
-                return
-            vertex = self._find_vertex_at(event)
-            if vertex:
-                self._drag_vertex = vertex
-                shape = self._find_shape(vertex[0])
-                if shape and len(shape.points) > vertex[1]:
-                    self._drag_vertex_start = shape.points[vertex[1]]
-                return
-            if self._hit_selection_bounds(event):
-                self._begin_move_drag(event)
-                return
+                if self._hit_selection_bounds(event):
+                    self._begin_move_drag(event)
+                    return
+
             hit = self._select_at(event)
             if not hit:
                 self._drag_start = (event.x, event.y)
