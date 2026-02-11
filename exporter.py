@@ -142,8 +142,15 @@ class HudExporter:
         (x1, y1), (x2, y2) = shape.points[0], shape.points[1]
         rgb = self._color_vec(layer_color or shape.stroke)
         stroke = max(1, int(shape.stroke_width))
-        if abs(y2 - y1) < 1e-6 or abs(x2 - x1) < 1e-6:
-            if abs(y2 - y1) < 1e-6:
+        # Loose axis-aligned detection: if the delta rounds down to 0 at whole-pixel
+        # precision, treat it as axis-aligned and export as a box for cleaner thickness.
+        dy_rounded = round(abs(y2 - y1), 0)
+        dx_rounded = round(abs(x2 - x1), 0)
+        horizontalish = dy_rounded == 0
+        verticalish = dx_rounded == 0
+
+        if horizontalish or verticalish:
+            if horizontalish:
                 width = max(abs(x2 - x1), 1)
                 height = stroke
             else:
