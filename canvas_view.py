@@ -33,6 +33,7 @@ class CanvasView:
         self.settings = {
             "stroke": config.DEFAULT_STROKE,
             "stroke_width": config.DEFAULT_STROKE_WIDTH,
+            "alpha": 255,
             "fill": config.DEFAULT_FILL,
             "text": config.DEFAULT_TEXT,
             "font": config.DEFAULT_FONT,
@@ -160,6 +161,8 @@ class CanvasView:
                     shape.stroke_width = int(self.settings["stroke_width"])
             if key_set is None or "fill" in key_set:
                 shape.fill = str(self.settings["fill"]) if self.settings.get("fill") else None
+            if key_set is None or "alpha" in key_set:
+                shape.alpha = max(0, min(255, int(self.settings.get("alpha", 255))))
             if key_set is None or "text" in key_set:
                 shape.text = str(self.settings["text"])
             if key_set is None or "font" in key_set:
@@ -804,17 +807,18 @@ class CanvasView:
         shape_id = self.project.new_shape_id()
         stroke = str(self.settings["stroke"])
         stroke_width = int(self.settings["stroke_width"])
+        alpha = max(0, min(255, int(self.settings.get("alpha", 255))))
         fill = str(self.settings["fill"]) if self.settings.get("fill") else None
         if self.tool == "line":
-            return Shape(id=shape_id, kind="line", points=[start, end], stroke=stroke, stroke_width=stroke_width)
+            return Shape(id=shape_id, kind="line", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha)
         if self.tool == "rect":
-            return Shape(id=shape_id, kind="rect", points=[start, end], stroke=stroke, stroke_width=stroke_width)
+            return Shape(id=shape_id, kind="rect", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha)
         if self.tool == "box":
-            return Shape(id=shape_id, kind="box", points=[start, end], stroke=stroke, stroke_width=stroke_width, fill=fill)
+            return Shape(id=shape_id, kind="box", points=[start, end], stroke=stroke, stroke_width=stroke_width, alpha=alpha, fill=fill)
         if self.tool == "circle":
-            return Shape(id=shape_id, kind="circle", points=[start, end], stroke=stroke, stroke_width=1)
+            return Shape(id=shape_id, kind="circle", points=[start, end], stroke=stroke, stroke_width=1, alpha=alpha)
         if self.tool == "circle_filled":
-            return Shape(id=shape_id, kind="circle_filled", points=[start, end], stroke=stroke, stroke_width=1, fill=fill)
+            return Shape(id=shape_id, kind="circle_filled", points=[start, end], stroke=stroke, stroke_width=1, alpha=alpha, fill=fill)
         return None
 
     def _create_text_shape(self, point: Point) -> None:
@@ -832,6 +836,7 @@ class CanvasView:
             points=[point],
             stroke=str(self.settings["stroke"]),
             stroke_width=int(self.settings["stroke_width"]),
+            alpha=max(0, min(255, int(self.settings.get("alpha", 255)))),
             text=str(text),
             font=str(self.settings["font"]),
             font_size=int(self.settings["font_size"]),
@@ -873,6 +878,7 @@ class CanvasView:
             points=list(self._poly_points),
             stroke=str(self.settings["stroke"]),
             stroke_width=int(self.settings["stroke_width"]),
+            alpha=max(0, min(255, int(self.settings.get("alpha", 255)))),
             fill=str(self.settings["fill"]) if self.settings.get("fill") else None,
         )
         layer = self.project.get_layer(self.active_layer_id)

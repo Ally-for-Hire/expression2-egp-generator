@@ -114,6 +114,12 @@ class HudExporter:
             return (255, 255, 255)
         return (int(color[0:2], 16), int(color[2:4], 16), int(color[4:6], 16))
 
+    def _alpha_value(self, shape: Shape) -> int:
+        """Description: Alpha value
+        Inputs: shape: Shape
+        """
+        return max(0, min(255, int(getattr(shape, "alpha", 255))))
+
     def _export_shape(self, egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None) -> None:
         """Description: Export shape
         Inputs: egp_id: int, resolution: Tuple[int, int], layer_color: str | None, shape: Shape, text_expr: str | None
@@ -161,6 +167,7 @@ class HudExporter:
             lines = [
                 f"    EGP:egpBox( {egp_id}, {center}, {self._size_xy_expr(width, height)} )\n",
                 f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+                f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
             ]
             self._write_lines(lines)
             return
@@ -169,6 +176,7 @@ class HudExporter:
         lines = [
             f"    EGP:egpLine( {egp_id}, {p1}, {p2} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
 
@@ -184,6 +192,7 @@ class HudExporter:
         lines = [
             f"    EGP:egpBoxOutline( {egp_id}, {center}, {self._size_xy_expr(w, h)} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
 
@@ -199,6 +208,7 @@ class HudExporter:
         lines = [
             f"    EGP:egpBox( {egp_id}, {center}, {self._size_xy_expr(w, h)} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
 
@@ -216,6 +226,7 @@ class HudExporter:
         lines = [
             f"    EGP:{circle_call}( {egp_id}, {center}, {self._size_xy_expr(w/2, h/2)} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
 
@@ -231,6 +242,7 @@ class HudExporter:
         lines = [
             f"    EGP:egpPoly( {egp_id},array( {poly_points} ))\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
 
@@ -252,6 +264,7 @@ class HudExporter:
         lines = [
             f"    EGP:egpText( {egp_id}, {text}, {point} )\n",
             f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
             f"    EGP:egpAlign( {egp_id}, {align_h}, {align_v} )\n",
         ]
         if shape.font:

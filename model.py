@@ -14,6 +14,7 @@ class Shape:
     points: List[Point]
     stroke: str
     stroke_width: int
+    alpha: int = 255
     fill: Optional[str] = None
     text: str = ""
     font: str = ""
@@ -30,6 +31,7 @@ class Shape:
             "points": self.points,
             "stroke": self.stroke,
             "stroke_width": self.stroke_width,
+            "alpha": self.alpha,
             "fill": self.fill,
             "text": self.text,
             "font": self.font,
@@ -48,6 +50,7 @@ class Shape:
             points=[tuple(p) for p in payload.get("points", [])],
             stroke=payload.get("stroke", "#FFFFFF"),
             stroke_width=int(payload.get("stroke_width", 1)),
+            alpha=int(payload.get("alpha", 255)),
             fill=payload.get("fill"),
             text=payload.get("text", ""),
             font=payload.get("font", ""),

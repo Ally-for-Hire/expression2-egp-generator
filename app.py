@@ -280,6 +280,7 @@ class EgpApp:
         self.stroke_var = tk.StringVar(value=config.DEFAULT_STROKE)
         self.fill_var = tk.StringVar(value=config.DEFAULT_FILL)
         self.stroke_width_var = tk.IntVar(value=config.DEFAULT_STROKE_WIDTH)
+        self.alpha_var = tk.IntVar(value=255)
         self.text_var = tk.StringVar(value=config.DEFAULT_TEXT)
         self.font_var = tk.StringVar(value=config.DEFAULT_FONT)
         self.font_size_var = tk.IntVar(value=config.DEFAULT_FONT_SIZE)
@@ -288,6 +289,7 @@ class EgpApp:
         self.stroke_label, self.stroke_entry = self._create_labeled_entry("Stroke", self.stroke_var)
         self.fill_label, self.fill_entry = self._create_labeled_entry("Fill", self.fill_var)
         self.stroke_width_label, self.stroke_width_spin = self._create_labeled_spin("Stroke Width", self.stroke_width_var, 1, 24)
+        self.alpha_label, self.alpha_spin = self._create_labeled_spin("Alpha", self.alpha_var, 0, 255)
         self.text_label, self.text_entry = self._create_labeled_entry("Text", self.text_var)
         self.font_label, self.font_menu = self._create_labeled_option("Font", self.font_var, config.FONTS)
         self.font_size_label, self.font_size_spin = self._create_labeled_spin("Font Size", self.font_size_var, 6, 128)
@@ -351,6 +353,7 @@ class EgpApp:
             ("stroke", self._grid_stroke_row),
             ("fill", self._grid_fill_row),
             ("stroke_width", self._grid_stroke_width_row),
+            ("alpha", self._grid_alpha_row),
             ("text", self._grid_text_row),
             ("font", self._grid_font_row),
             ("font_size", self._grid_font_size_row),
@@ -364,6 +367,7 @@ class EgpApp:
         self.stroke_var.trace_add("write", lambda *_: self._sync_tool_settings("stroke"))
         self.fill_var.trace_add("write", lambda *_: self._sync_tool_settings("fill"))
         self.stroke_width_var.trace_add("write", lambda *_: self._sync_tool_settings("stroke_width"))
+        self.alpha_var.trace_add("write", lambda *_: self._sync_tool_settings("alpha"))
         self.text_var.trace_add("write", lambda *_: self._sync_tool_settings("text"))
         self.font_var.trace_add("write", lambda *_: self._sync_tool_settings("font"))
         self.font_size_var.trace_add("write", lambda *_: self._sync_tool_settings("font_size"))
@@ -446,6 +450,14 @@ class EgpApp:
         """
         self.stroke_width_label.grid(row=row, column=0, sticky="w")
         self.stroke_width_spin.grid(row=row, column=1, sticky="ew", pady=2)
+        return row + 1
+
+    def _grid_alpha_row(self, row: int) -> int:
+        """Description: Grid alpha row
+        Inputs: row: int
+        """
+        self.alpha_label.grid(row=row, column=0, sticky="w")
+        self.alpha_spin.grid(row=row, column=1, sticky="ew", pady=2)
         return row + 1
 
     def _grid_text_row(self, row: int) -> int:
@@ -535,11 +547,14 @@ class EgpApp:
         all_fillable = has_selection and all(kind in ("box", "circle_filled", "poly") for kind in selected_kinds)
         show_fill = all_fillable or (not has_selection and tool in ("box", "circle_filled", "poly"))
         show_stroke_width = (has_selection and any(kind != "text" for kind in selected_kinds)) or (not has_selection and tool != "text")
+        show_alpha = (has_selection and any(kind in ("line", "rect", "box", "circle", "circle_filled", "poly", "text") for kind in selected_kinds)) or (not has_selection)
         visible = {"stroke", "palette"}
         if show_fill:
             visible.add("fill")
         if show_stroke_width:
             visible.add("stroke_width")
+        if show_alpha:
+            visible.add("alpha")
         if any_text:
             visible.update({"text", "font", "font_size", "align"})
         if has_selection:
@@ -829,6 +844,7 @@ class EgpApp:
             "stroke": self.stroke_var.get(),
             "fill": self.fill_var.get(),
             "stroke_width": self.stroke_width_var.get(),
+            "alpha": self.alpha_var.get(),
             "text": self.text_var.get(),
             "font": self.font_var.get(),
             "font_size": self.font_size_var.get(),
@@ -849,7 +865,7 @@ class EgpApp:
         """
         # Safety: bulk apply should NOT overwrite text content.
         # Text can still be edited explicitly on selected text objects via the text field.
-        bulk_keys = ["stroke", "stroke_width", "fill", "font", "font_size", "align"]
+        bulk_keys = ["stroke", "stroke_width", "alpha", "fill", "font", "font_size", "align"]
         self.canvas_view.apply_settings_to_selected(bulk_keys)
         self._mark_dirty()
 
@@ -875,6 +891,7 @@ class EgpApp:
         self.stroke_var.set(shape.stroke)
         self.fill_var.set(shape.fill or "")
         self.stroke_width_var.set(shape.stroke_width)
+        self.alpha_var.set(getattr(shape, "alpha", 255))
         self.text_var.set(shape.text)
         self.font_var.set(shape.font or config.DEFAULT_FONT)
         self.font_size_var.set(shape.font_size)
