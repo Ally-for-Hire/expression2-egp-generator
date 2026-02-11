@@ -1,0 +1,377 @@
+{
+  "resolution": [
+    1920,
+    1080
+  ],
+  "active_layer_id": "11a92d61-c5c4-41d2-80c0-a859bfa8fc4e",
+  "layers": [
+    {
+      "id": "11a92d61-c5c4-41d2-80c0-a859bfa8fc4e",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "color": "#ffbf00",
+      "shapes": [
+        {
+          "id": "36a59fb2-57d1-4b1c-96a1-89bab5043225",
+          "kind": "line",
+          "points": [
+            [
+              959.9972350827508,
+              533.0670854149196
+            ],
+            [
+              959.9972350827508,
+              547.8688015694629
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "6c14d440-f7cd-47c5-a87c-81b0b8e834c6",
+          "kind": "line",
+          "points": [
+            [
+              934.4752145307433,
+              540.4679434921912
+            ],
+            [
+              985.5192556347582,
+              540.4679434921912
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "0ddedc6c-6d90-44e3-b57a-bbcaa640e97a",
+          "kind": "line",
+          "points": [
+            [
+              749.9434634101356,
+              426.96291751097164
+            ],
+            [
+              724.4214428581281,
+              426.96291751097164
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "f64d924b-e58f-4c75-896d-7565919e86b4",
+          "kind": "line",
+          "points": [
+            [
+              724.4214428581281,
+              426.96291751097164
+            ],
+            [
+              724.4214428581281,
+              434.3637755882433
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "8ade30d7-dac8-4e33-9781-4604679ce7eb",
+          "kind": "line",
+          "points": [
+            [
+              1170.051006755366,
+              426.96291751097164
+            ],
+            [
+              1195.5730273073732,
+              426.96291751097164
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "96ed17ca-cde0-4633-895a-05e4aa9939e8",
+          "kind": "line",
+          "points": [
+            [
+              1195.5730273073732,
+              426.96291751097164
+            ],
+            [
+              1195.5730273073732,
+              434.3637755882433
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "36849a4d-5b75-4d84-83a1-280c17ec2164",
+          "kind": "line",
+          "points": [
+            [
+              1170.051006755366,
+              653.9729694734109
+            ],
+            [
+              1195.5730273073732,
+              653.9729694734109
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "940cd6a0-e7cb-495a-b6d7-33b22917b6fb",
+          "kind": "line",
+          "points": [
+            [
+              1195.5730273073732,
+              653.9729694734109
+            ],
+            [
+              1195.5730273073732,
+              646.5721113961392
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "a18b7ac9-28d3-4cc3-ae56-185275cceabc",
+          "kind": "line",
+          "points": [
+            [
+              749.9434634101356,
+              653.9729694734109
+            ],
+            [
+              724.4214428581281,
+              653.9729694734109
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "368cdc9d-17a3-47e0-a102-1bf1fb7eabb2",
+          "kind": "line",
+          "points": [
+            [
+              724.4214428581281,
+              653.9729694734109
+            ],
+            [
+              724.4214428581281,
+              646.5721113961392
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "20d7801d-0f96-4f70-aae7-6c675b803c56",
+          "kind": "line",
+          "points": [
+            [
+              698.8697624078288,
+              540.4679434921912
+            ],
+            [
+              738.038883309067,
+              540.4679434921912
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "2a83576e-35cf-4276-816a-d08ba45b33b8",
+          "kind": "line",
+          "points": [
+            [
+              1221.1247077576727,
+              540.4679434921912
+            ],
+            [
+              1181.9555868564344,
+              540.4679434921912
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "2b163a6f-9863-4cb8-9400-9caeb4b47988",
+          "kind": "line",
+          "points": [
+            [
+              803.3207514777976,
+              688.2677819130419
+            ],
+            [
+              1117.0280581468,
+              688.3533578320935
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "6b219696-4c8b-4caf-a042-b498bd2e281d",
+          "kind": "text",
+          "points": [
+            [
+              803.3207514777976,
+              696.1504399621539
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "A1: %Ammo1%",
+          "font": "Calibri",
+          "font_size": 18,
+          "align": "left"
+        },
+        {
+          "id": "10f8c560-a6a8-48fd-a612-bf04ebf905c3",
+          "kind": "text",
+          "points": [
+            [
+              803.3207514777976,
+              707.9744270358219
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "A2: %Ammo2%",
+          "font": "Calibri",
+          "font_size": 18,
+          "align": "left"
+        },
+        {
+          "id": "60ccb44a-fe62-49fe-81fc-f59a2fefdb09",
+          "kind": "text",
+          "points": [
+            [
+              1116.673718687704,
+              696.6431060902235
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "Speed: %Speed%R1 KMH",
+          "font": "Calibri",
+          "font_size": 18,
+          "align": "right"
+        },
+        {
+          "id": "873faa50-438c-47b8-a35b-769e3b7f0b8a",
+          "kind": "text",
+          "points": [
+            [
+              1116.673718687704,
+              708.4670931638914
+            ]
+          ],
+          "stroke": "#E6E6E6",
+          "stroke_width": 2,
+          "fill": null,
+          "text": "Smokes: %Smokes%",
+          "font": "Calibri",
+          "font_size": 18,
+          "align": "right"
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Ammo1",
+      "type": "Normal"
+    },
+    {
+      "name": "Ammo2",
+      "type": "Normal"
+    },
+    {
+      "name": "Speed",
+      "type": "Normal"
+    },
+    {
+      "name": "Smokes",
+      "type": "Normal"
+    }
+  ]
+}

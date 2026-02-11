@@ -1,0 +1,464 @@
+{
+  "resolution": [
+    2560,
+    1440
+  ],
+  "active_layer_id": "5e74cd7c-b4f2-4df1-92f0-9c22e4f5f2af",
+  "layers": [
+    {
+      "id": "5e74cd7c-b4f2-4df1-92f0-9c22e4f5f2af",
+      "name": "Layer 1",
+      "visible": true,
+      "locked": false,
+      "color": null,
+      "shapes": [
+        {
+          "id": "ret1",
+          "kind": "line",
+          "points": [
+            [
+              1280.0,
+              712.9288808556685
+            ],
+            [
+              1280.0,
+              727.0711191443314
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": "#FFD60A",
+          "text": "",
+          "font": "Segoe UI",
+          "font_size": 18,
+          "align": "left"
+        },
+        {
+          "id": "ret2",
+          "kind": "line",
+          "points": [
+            [
+              1265.7254824647002,
+              720.0
+            ],
+            [
+              1294.2745175352998,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": "#FFD60A",
+          "text": "",
+          "font": "Segoe UI",
+          "font_size": 18,
+          "align": "left"
+        },
+        {
+          "id": "top3",
+          "kind": "text",
+          "points": [
+            [
+              1390.0,
+              925.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "FUEL %Fuel%L",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "core1",
+          "kind": "text",
+          "points": [
+            [
+              1680.0000000000002,
+              697.9447688202151
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": "#E6E6E6",
+          "text": "MAIN %Ammo1%",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "core2",
+          "kind": "text",
+          "points": [
+            [
+              880.0,
+              708.9723844101075
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "RELOAD %ReloadSec%s",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "right1",
+          "kind": "text",
+          "points": [
+            [
+              1680.0000000000002,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": "#E6E6E6",
+          "text": "SECONDARY %Ammo2%",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "right3",
+          "kind": "text",
+          "points": [
+            [
+              880.0,
+              731.0276155898924
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "STATE %ReadyState%",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "bot1",
+          "kind": "text",
+          "points": [
+            [
+              1280.0,
+              925.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "SPEED %Speed% KMH",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "bot2",
+          "kind": "text",
+          "points": [
+            [
+              1170.0,
+              925.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "GEAR %Gear%",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "bot3",
+          "kind": "text",
+          "points": [
+            [
+              1680.0000000000002,
+              742.0552311797848
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": "#E6E6E6",
+          "text": "SMOKES %Smokes%",
+          "font": "Arial",
+          "font_size": 18,
+          "align": "center"
+        },
+        {
+          "id": "fc91b549-8ff0-4385-b6a1-e2dff4c50e9f",
+          "kind": "line",
+          "points": [
+            [
+              1280.0,
+              735.0
+            ],
+            [
+              1280.0,
+              750.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "e1acce7b-b4e3-4d6d-a607-1438d1b8d344",
+          "kind": "line",
+          "points": [
+            [
+              1280.0,
+              705.0
+            ],
+            [
+              1280.0,
+              690.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "2b98e598-ca7b-4765-8963-dd7ac9138554",
+          "kind": "line",
+          "points": [
+            [
+              1310.0,
+              720.0
+            ],
+            [
+              1355.0,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "ac23ded0-bdee-462f-a2a9-4343e71b870b",
+          "kind": "line",
+          "points": [
+            [
+              1340.1197242967132,
+              690.440611006859
+            ],
+            [
+              1385.1197242967132,
+              690.440611006859
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "18492d71-db46-4257-8b95-361542ada162",
+          "kind": "line",
+          "points": [
+            [
+              1340.1197242967132,
+              750.440611006859
+            ],
+            [
+              1385.1197242967132,
+              750.440611006859
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "f064f7a5-13c8-451e-9e77-62d7a15b0ed7",
+          "kind": "line",
+          "points": [
+            [
+              1400.1197242967132,
+              720.440611006859
+            ],
+            [
+              1446.429180988745,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "1e55594a-05e5-4b63-a28d-4a0a1f800a3b",
+          "kind": "line",
+          "points": [
+            [
+              1219.8802757032868,
+              690.440611006859
+            ],
+            [
+              1174.8802757032868,
+              690.440611006859
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "41e8fd5f-e1b9-4dab-8bcb-b26801b23a97",
+          "kind": "line",
+          "points": [
+            [
+              1219.8802757032868,
+              750.440611006859
+            ],
+            [
+              1174.8802757032868,
+              750.440611006859
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "58b895b6-16c0-4a96-93f5-849266be7204",
+          "kind": "line",
+          "points": [
+            [
+              1159.8802757032868,
+              720.440611006859
+            ],
+            [
+              1113.570819011255,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        },
+        {
+          "id": "a95c7748-1715-48db-a9bb-3a345ab01e39",
+          "kind": "line",
+          "points": [
+            [
+              1250.0,
+              720.0
+            ],
+            [
+              1205.0,
+              720.0
+            ]
+          ],
+          "stroke": "#FFD60A",
+          "stroke_width": 2,
+          "alpha": 255,
+          "fill": null,
+          "text": "",
+          "font": "",
+          "font_size": 12,
+          "align": "left"
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "name": "Ammo1",
+      "type": "Normal"
+    },
+    {
+      "name": "Ammo2",
+      "type": "Normal"
+    },
+    {
+      "name": "ReloadSec",
+      "type": "Normal"
+    },
+    {
+      "name": "Speed",
+      "type": "Normal"
+    },
+    {
+      "name": "Gear",
+      "type": "Normal"
+    },
+    {
+      "name": "Smokes",
+      "type": "Normal"
+    },
+    {
+      "name": "Fuel",
+      "type": "Normal"
+    },
+    {
+      "name": "Mode",
+      "type": "Normal"
+    },
+    {
+      "name": "ReadyState",
+      "type": "String"
+    }
+  ]
+}
