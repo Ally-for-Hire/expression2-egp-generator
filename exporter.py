@@ -65,7 +65,7 @@ class HudExporter:
             "    Res /= 2\n",
             f"    ProjRes = vec2( {resolution[0]}, {resolution[1]} )\n",
             "    Scale = vec2(X/ProjRes:x(), Y/ProjRes:y())\n",
-            "    interval(100)\n",
+            "    interval(100)\n\n",
         ]
 
     def _write_lines(self, lines: Iterable[str]) -> None:
@@ -90,20 +90,20 @@ class HudExporter:
         """
         dx = point[0] - resolution[0] / 2
         dy = point[1] - resolution[1] / 2
-        return f"Res+vec2( {self._fmt_num(dx)}*Scale:x(), {self._fmt_num(dy)}*Scale:y())"
+        return f"Res + vec2( {self._fmt_num(dx)} * Scale:x(), {self._fmt_num(dy)} * Scale:y())"
 
     def _size_expr(self, value: float) -> str:
         """Description: Size expr
         Inputs: value: float
         """
         v = self._fmt_num(value)
-        return f"vec2( {v}*Scale:x(), {v}*Scale:x())"
+        return f"vec2( {v} * Scale:x(), {v} * Scale:x())"
 
     def _size_xy_expr(self, width: float, height: float) -> str:
         """Description: Size xy expr
         Inputs: width: float, height: float
         """
-        return f"vec2( {self._fmt_num(width)}*Scale:x(), {self._fmt_num(height)}*Scale:y())"
+        return f"vec2( {self._fmt_num(width)} * Scale:x(), {self._fmt_num(height)} * Scale:y())"
 
     def _color_vec(self, color: str) -> Tuple[int, int, int]:
         """Description: Color vec
@@ -191,7 +191,7 @@ class HudExporter:
         rgb = self._color_vec(layer_color or shape.stroke)
         lines = [
             f"    EGP:egpBoxOutline( {egp_id}, {center}, {self._size_xy_expr(w, h)} )\n",
-            f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpColor( {egp_id}, vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
             f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
@@ -207,7 +207,7 @@ class HudExporter:
         rgb = self._color_vec(layer_color or shape.fill or shape.stroke)
         lines = [
             f"    EGP:egpBox( {egp_id}, {center}, {self._size_xy_expr(w, h)} )\n",
-            f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpColor( {egp_id}, vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
             f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
@@ -225,7 +225,7 @@ class HudExporter:
         circle_call = "egpCircle" if filled else "egpCircleOutline"
         lines = [
             f"    EGP:{circle_call}( {egp_id}, {center}, {self._size_xy_expr(w/2, h/2)} )\n",
-            f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpColor( {egp_id}, vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
             f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
@@ -240,8 +240,8 @@ class HudExporter:
         poly_points = ",".join(points)
         rgb = self._color_vec(layer_color or shape.fill or shape.stroke)
         lines = [
-            f"    EGP:egpPoly( {egp_id},array( {poly_points} ))\n",
-            f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpPoly( {egp_id}, array( {poly_points} ))\n",
+            f"    EGP:egpColor( {egp_id}, vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
             f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
         ]
         self._write_lines(lines)
@@ -263,7 +263,7 @@ class HudExporter:
         align_v = 1
         lines = [
             f"    EGP:egpText( {egp_id}, {text}, {point} )\n",
-            f"    EGP:egpColor( {egp_id},vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
+            f"    EGP:egpColor( {egp_id}, vec({rgb[0]}, {rgb[1]}, {rgb[2]}))\n",
             f"    EGP:egpAlpha( {egp_id}, {self._alpha_value(shape)} )\n",
             f"    EGP:egpAlign( {egp_id}, {align_h}, {align_v} )\n",
         ]

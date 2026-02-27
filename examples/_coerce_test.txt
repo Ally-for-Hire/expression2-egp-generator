@@ -1,0 +1,30 @@
+@name Untitled
+@inputs EGP:wirelink Speed:normal Mode:string
+@persist X Y Res:vector2 ProjRes:vector2 Scale:vector2
+
+if ( first() )
+{
+    EGP:egpClear()
+    Res = egpScrSize(owner())
+    X   = Res:x()
+    Y   = Res:y()
+    Res /= 2
+    ProjRes = vec2( 1920, 1080 )
+    Scale = vec2(X/ProjRes:x(), Y/ProjRes:y())
+    interval(100)
+    EGP:egpText( 1, (round(Speed,0)) + "", Res+vec2( 0.0*Scale:x(), 0.0*Scale:y()) )
+    EGP:egpColor( 1,vec(255, 255, 255))
+    EGP:egpAlign( 1, 0, 1 )
+    EGP:egpFont( 1,"Calibri", 16 )
+    EGP:egpText( 2, Mode, Res+vec2( 0.0*Scale:x(), 20.0*Scale:y()) )
+    EGP:egpColor( 2,vec(255, 255, 255))
+    EGP:egpAlign( 2, 0, 1 )
+    EGP:egpFont( 2,"Calibri", 16 )
+}
+
+if (clk())
+{
+   interval(100)
+   EGP:egpSetText( 1, (round(Speed,0)) + "" )
+   EGP:egpSetText( 2, Mode )
+}

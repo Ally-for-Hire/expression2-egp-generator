@@ -1,0 +1,21 @@
+@name Untitled
+@inputs EGP:wirelink
+@persist X Y Res:vector2 ProjRes:vector2 Scale:vector2
+
+if ( first() )
+{
+    EGP:egpClear()
+    Res = egpScrSize(owner())
+    X   = Res:x()
+    Y   = Res:y()
+    Res /= 2
+    ProjRes = vec2( 1920, 1080 )
+    Scale = vec2(X/ProjRes:x(), Y/ProjRes:y())
+    interval(100)
+    EGP:egpText( 1, "X", Res+vec2( 0.0*Scale:x(), 0.0*Scale:y()) )
+    EGP:egpColor( 1,vec(255, 255, 255))
+    EGP:egpAlpha( 1, 128 )
+    EGP:egpAlign( 1, 1, 1 )
+    EGP:egpFont( 1,"Calibri", 16 )
+}
+

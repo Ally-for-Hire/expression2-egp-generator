@@ -1,0 +1,20 @@
+@name Untitled
+@inputs EGP:wirelink
+@persist X Y Res:vector2 ProjRes:vector2 Scale:vector2
+
+if ( first() )
+{
+    EGP:egpClear()
+    Res = egpScrSize(owner())
+    X   = Res:x()
+    Y   = Res:y()
+    Res /= 2
+    ProjRes = vec2( 1920, 1080 )
+    Scale = vec2(X/ProjRes:x(), Y/ProjRes:y())
+    interval(100)
+    EGP:egpCircleOutline( 1, Res+vec2( 0.0*Scale:x(), 20.0*Scale:y()), vec2( 60.0*Scale:x(), 60.0*Scale:y()) )
+    EGP:egpColor( 1,vec(255, 255, 255))
+    EGP:egpCircle( 2, Res+vec2( 0.0*Scale:x(), 20.0*Scale:y()), vec2( 30.0*Scale:x(), 30.0*Scale:y()) )
+    EGP:egpColor( 2,vec(0, 255, 0))
+}
+
